@@ -8,6 +8,7 @@ cfg_std! {
   #[allow(unused_imports)]
   pub use _log::*;
 }
+/// 私有
 #[path = "./__private.rs"]
 pub mod __private;
 use e_utils::{CResult, Result};
@@ -137,6 +138,7 @@ pub struct LevelData<T: Serialize, S: Serialize> {
   pub tag: S,
 }
 impl<T: Serialize, S: Serialize> LevelData<T, S> {
+  /// 序列化
   pub fn to_string(&self) -> String {
     serde_json::to_string(self).unwrap_or_default()
   }

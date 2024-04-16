@@ -40,11 +40,11 @@ time = { version = "0.3", features = [
   "formatting",
   "local-offset",
 ], optional = true }
-e-utils = { version = "0.2.0" }
+e-utils = { version = "0.3" }
 
 [package]
 name = "e-log"
-version = "0.1.0"
+version = "0.1.1"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
