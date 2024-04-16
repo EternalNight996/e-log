@@ -58,7 +58,7 @@ documentation = "https://docs.rs/e-log"
 repository = "https://gitee.com/eternalnight996/e-log"
 include = ["src/", "*.md", "*-LICENSE", "Cargo.toml","docs","public"]
 keywords = ["log", "tracing", "e-", "tauri"]
-categories = []
+categories = ["development-tools::debugging"]
 
 [package.metadata.docs.rs]
 # RUSTDOCFLAGS="--cfg doc_cfg" cargo +nightly doc --all-features --no-deps --open
