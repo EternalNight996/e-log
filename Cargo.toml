@@ -7,9 +7,9 @@ proc-macro = false
 
 [features]
 std = ["log"]
-trace = ["tracing"]
-trace-subscriber = ["tracing-subscriber"]
-trace-appender = ["tracing-appender"]
+# trace = ["tracing"]
+# trace-subscriber = ["tracing-subscriber"]
+# trace-appender = ["tracing-appender"]
 _tauri = [
   "std",
   "time",
@@ -30,12 +30,12 @@ serde_repr = { version = "0.1", optional = true }
 byte-unit = { version = "5", optional = true }
 fern = { version = "0.6", optional = true }
 log = { version = "^0.4.21", optional = true }
-tracing = { version = "0.1", optional = true }
-tracing-subscriber = { version = "0.3", features = [
-  "env-filter",
-  "json",
-], optional = true }
-tracing-appender = { version = "0.2", optional = true }
+# tracing = { version = "0.1", optional = true }
+# tracing-subscriber = { version = "0.3", features = [
+#   "env-filter",
+#   "json",
+# ], optional = true }
+# tracing-appender = { version = "0.2", optional = true }
 time = { version = "0.3", features = [
   "formatting",
   "local-offset",

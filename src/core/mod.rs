@@ -1,9 +1,9 @@
-cfg_trace! {
-  /// trace
-  pub mod trace;
-  #[allow(unused_imports)]
-  pub use trace::*;
-}
+// cfg_trace! {
+//   /// trace
+//   pub mod trace;
+//   #[allow(unused_imports)]
+//   pub use trace::*;
+// }
 cfg_std! {
   /// Std
   pub mod _log;
@@ -14,8 +14,8 @@ cfg_std! {
 use e_utils::{CResult, Result};
 #[cfg(feature = "std")]
 pub use log::LevelFilter;
-#[cfg(feature = "trace")]
-pub use tracing::level_filters::LevelFilter;
+// #[cfg(feature = "trace")]
+// pub use tracing::level_filters::LevelFilter;
 
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, str::FromStr};
@@ -175,19 +175,19 @@ impl From<LevelFilter> for Level {
     }
   }
 }
-#[cfg(feature = "trace")]
-impl From<LevelFilter> for Level {
-  fn from(value: LevelFilter) -> Self {
-    match value {
-      LevelFilter::OFF => Level::Off,
-      LevelFilter::DEBUG => Level::Debug,
-      LevelFilter::INFO => Level::Info,
-      LevelFilter::TRACE => Level::Trace,
-      LevelFilter::ERROR => Level::Error,
-      LevelFilter::WARN => Level::Warn,
-    }
-  }
-}
+// #[cfg(feature = "trace")]
+// impl From<LevelFilter> for Level {
+//   fn from(value: LevelFilter) -> Self {
+//     match value {
+//       LevelFilter::OFF => Level::Off,
+//       LevelFilter::DEBUG => Level::Debug,
+//       LevelFilter::INFO => Level::Info,
+//       LevelFilter::TRACE => Level::Trace,
+//       LevelFilter::ERROR => Level::Error,
+//       LevelFilter::WARN => Level::Warn,
+//     }
+//   }
+// }
 impl Level {
   /// 日志兼容Std
   #[cfg(feature = "std")]
@@ -201,18 +201,18 @@ impl Level {
       Level::Error => LevelFilter::Error,
     }
   }
-  /// 日志兼容trace
-  #[cfg(feature = "trace")]
-  pub fn to_level_filter(&self) -> LevelFilter {
-    match self {
-      Level::Off => LevelFilter::OFF,
-      Level::Trace => LevelFilter::TRACE,
-      Level::Debug => LevelFilter::DEBUG,
-      Level::Info => LevelFilter::INFO,
-      Level::Warn => LevelFilter::WARN,
-      Level::Error => LevelFilter::ERROR,
-    }
-  }
+  // /// 日志兼容trace
+  // #[cfg(feature = "trace")]
+  // pub fn to_level_filter(&self) -> LevelFilter {
+  //   match self {
+  //     Level::Off => LevelFilter::OFF,
+  //     Level::Trace => LevelFilter::TRACE,
+  //     Level::Debug => LevelFilter::DEBUG,
+  //     Level::Info => LevelFilter::INFO,
+  //     Level::Warn => LevelFilter::WARN,
+  //     Level::Error => LevelFilter::ERROR,
+  //   }
+  // }
   /// 输出成字符串
   pub fn to_string(&self) -> String {
     self.to_level_filter().to_string()
@@ -232,13 +232,13 @@ impl From<&str> for Level {
     level
   }
 }
-#[cfg(feature = "trace")]
-impl From<&str> for Level {
-  fn from(s: &str) -> Self {
-    let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::OFF).into();
-    level
-  }
-}
+// #[cfg(feature = "trace")]
+// impl From<&str> for Level {
+//   fn from(s: &str) -> Self {
+//     let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::OFF).into();
+//     level
+//   }
+// }
 
 impl From<String> for Level {
   fn from(s: String) -> Self {
