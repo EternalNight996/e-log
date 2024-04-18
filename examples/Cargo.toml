@@ -1,0 +1,17 @@
+[package]
+name = "examples"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+# If you copy one of the examples into a new project, you should be using
+# [dependencies] instead, and delete the **path**.
+[dev-dependencies]
+e-log = { path = "../", default-features = false, features = ["trace"] }
+
+[[example]]
+name = "tracing"
+path = "tracing.rs"
+[[example]]
+name = "log"
+path = "log.rs"

@@ -1,5 +1,7 @@
 cfg_trace! {
+  /// trace
   pub mod trace;
+  #[allow(unused_imports)]
   pub use trace::*;
 }
 cfg_std! {
@@ -8,9 +10,7 @@ cfg_std! {
   #[allow(unused_imports)]
   pub use _log::*;
 }
-/// 私有
-#[path = "./__private.rs"]
-pub mod __private;
+
 use e_utils::{CResult, Result};
 #[cfg(feature = "std")]
 pub use log::LevelFilter;
@@ -183,7 +183,7 @@ impl From<LevelFilter> for Level {
       LevelFilter::DEBUG => Level::Debug,
       LevelFilter::INFO => Level::Info,
       LevelFilter::TRACE => Level::Trace,
-      LevelFilter::ERRRO => Level::Error,
+      LevelFilter::ERROR => Level::Error,
       LevelFilter::WARN => Level::Warn,
     }
   }
@@ -225,9 +225,17 @@ impl core::fmt::Display for Level {
   }
 }
 
+#[cfg(feature = "std")]
 impl From<&str> for Level {
   fn from(s: &str) -> Self {
     let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::Off).into();
+    level
+  }
+}
+#[cfg(feature = "trace")]
+impl From<&str> for Level {
+  fn from(s: &str) -> Self {
+    let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::OFF).into();
     level
   }
 }

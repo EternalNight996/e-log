@@ -143,19 +143,25 @@ impl From<log::Level> for LogLevel {
     }
   }
 }
-
+///
+#[derive(Debug)]
 pub enum RotationStrategy {
+  ///
   KeepAll,
+  ///
   KeepOne,
 }
-
+///
 #[derive(Debug, Clone)]
 pub enum TimezoneStrategy {
+  ///
   UseUtc,
+  ///
   UseLocal,
 }
 
 impl TimezoneStrategy {
+  ///
   pub fn get_now(&self) -> OffsetDateTime {
     match self {
       TimezoneStrategy::UseUtc => OffsetDateTime::now_utc(),
@@ -173,6 +179,7 @@ struct RecordPayload {
 }
 
 /// An enum representing the available targets of the logger.
+#[derive(Debug)]
 pub enum LogTarget {
   /// Print logs to stdout.
   Stdout,
@@ -224,15 +231,22 @@ fn log(
 
   logger().log(&builder.args(format_args!("{message}")).build());
 }
-
+///
 pub type TauriBuilder = Builder;
-
+///
+#[derive(Debug)]
 pub struct Builder {
+  ///
   dispatch: fern::Dispatch,
+  ///
   rotation_strategy: RotationStrategy,
+  ///
   timezone_strategy: TimezoneStrategy,
+  ///
   max_file_size: u128,
+  ///
   targets: Vec<LogTarget>,
+  ///
   log_name: Option<String>,
 }
 
@@ -262,15 +276,16 @@ impl Default for Builder {
 }
 
 impl Builder {
+  ///
   pub fn new() -> Self {
     Default::default()
   }
-
+  ///
   pub fn rotation_strategy(mut self, rotation_strategy: RotationStrategy) -> Self {
     self.rotation_strategy = rotation_strategy;
     self
   }
-
+  ///
   pub fn timezone_strategy(mut self, timezone_strategy: TimezoneStrategy) -> Self {
     self.timezone_strategy = timezone_strategy.clone();
 
@@ -288,43 +303,43 @@ impl Builder {
     });
     self
   }
-
+  ///
   pub fn max_file_size(mut self, max_file_size: u128) -> Self {
     self.max_file_size = max_file_size;
     self
   }
-
+  ///
   pub fn format<F>(mut self, formatter: F) -> Self
   where
-    F: Fn(FormatCallback, &Arguments, &Record) + Sync + Send + 'static,
+    F: Fn(FormatCallback<'_>, &Arguments<'_>, &Record<'_>) + Sync + Send + 'static,
   {
     self.dispatch = self.dispatch.format(formatter);
     self
   }
-
+  ///
   pub fn level(mut self, level_filter: impl Into<LevelFilter>) -> Self {
     self.dispatch = self.dispatch.level(level_filter.into());
     self
   }
-
+  ///
   pub fn level_for(mut self, module: impl Into<Cow<'static, str>>, level: LevelFilter) -> Self {
     self.dispatch = self.dispatch.level_for(module, level);
     self
   }
-
+  ///
   pub fn filter<F>(mut self, filter: F) -> Self
   where
-    F: Fn(&log::Metadata) -> bool + Send + Sync + 'static,
+    F: Fn(&log::Metadata<'_>) -> bool + Send + Sync + 'static,
   {
     self.dispatch = self.dispatch.filter(filter);
     self
   }
-
+  ///
   pub fn target(mut self, target: LogTarget) -> Self {
     self.targets.push(target);
     self
   }
-
+  ///
   pub fn targets(mut self, targets: impl IntoIterator<Item = LogTarget>) -> Self {
     self.targets = Vec::from_iter(targets);
     self
@@ -352,7 +367,7 @@ impl Builder {
     self.log_name = Some(log_name.into());
     self
   }
-
+  ///
   #[cfg(feature = "tauri-colored")]
   pub fn with_colors(self, colors: fern::colors::ColoredLevelConfig) -> Self {
     let format =
@@ -370,7 +385,7 @@ impl Builder {
       ))
     })
   }
-
+  ///
   pub fn build<R: Runtime>(mut self) -> TauriPlugin<R> {
     plugin::Builder::new("log")
       .invoke_handler(tauri::generate_handler![log])
@@ -438,7 +453,7 @@ impl Builder {
       .build()
   }
 }
-
+///
 fn get_log_file_path(
   dir: &impl AsRef<Path>,
   log_name: &str,
