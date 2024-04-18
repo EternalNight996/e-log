@@ -24,6 +24,14 @@ macro_rules! cfg_tauri {
     }
 }
 
+macro_rules! cfg_must {
+  ($($item:item)*) => {
+      $(
+        #[cfg(any(feature="std", feature="trace"))]
+          $item
+      )*
+  }
+}
 #[cfg(feature = "std")]
 #[doc(hidden)]
 #[macro_export]

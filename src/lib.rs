@@ -26,9 +26,12 @@
 #[macro_use]
 mod macros;
 
-/// core
-pub mod core;
-pub use core::*;
-/// preload
-#[path = "./preload.rs"]
-pub mod preload;
+
+cfg_must! {
+  /// core
+  pub mod core;
+  pub use core::*;
+  /// preload
+  #[path = "./preload.rs"]
+  pub mod preload;
+}
