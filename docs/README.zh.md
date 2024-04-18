@@ -28,9 +28,9 @@
   </tr>
   <tr>
     <td>tracing</td>
-    <td><h4 style="color:green">x</h4></td>
-    <td><h4 style="color:green">x</h4></td>
-    <td><h4 style="color:green">x</h4></td>
+    <td><h4 style="color:red">x</h4></td>
+    <td><h4 style="color:red">x</h4></td>
+    <td><h4 style="color:red">x</h4></td>
   </tr>
   <tr>
   <tr>
@@ -45,9 +45,9 @@
 ```toml
 [features]
 std = ["log"]
-trace = ["tracing"]
-trace-subscriber = ["tracing-subscriber"]
-trace-appender = ["tracing-appender"]
+# trace = ["tracing"]
+# trace-subscriber = ["tracing-subscriber"]
+# trace-appender = ["tracing-appender"]
 _tauri = [
   "std",
   "time",
