@@ -44,7 +44,7 @@ e-utils = { version = "0.3" }
 
 [package]
 name = "e-log"
-version = "0.1.5"
+version = "0.1.6"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
