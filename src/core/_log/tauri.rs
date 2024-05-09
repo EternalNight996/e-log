@@ -42,6 +42,7 @@ pub fn init_layer_log<P>(
   level: Level,
   _format: String,
   output_list: Vec<String>,
+  filter_target: Vec<String>,
 ) -> Result<Builder>
 where
   P: AsRef<Path> + Clone,
@@ -61,28 +62,21 @@ where
     .collect();
   let mut log = Builder::default()
     .rotation_strategy(RotationStrategy::KeepAll)
-    // log
     .targets(olist)
-    .format(|callback, message, record| {
-      let time = "{time}".parse_format().unwrap();
-      let date = "{date}".parse_format().unwrap();
-      // if cfg!(debug_assertions) {}
-      // let color = ColoredLevelConfig {
-      //   error: Color::Red,
-      //   warn: Color::Yellow,
-      //   debug: Color::Blue,
-      //   info: Color::BrightGreen,
-      //   trace: Color::Cyan,
-      // }
-      // .color(record.level());
-      callback.finish(format_args!(
-        "[{}][{}][{}][{}] {}{LINEFEED}",
-        date,
-        time,
-        record.target(),
-        record.level(),
-        message
-      ))
+    .format(move |callback, message, record| {
+      let target = record.target();
+      if filter_target.iter().find(|x| &***x == target).is_none() {
+        let time = "{time}".parse_format().unwrap();
+        let date = "{date}".parse_format().unwrap();
+        callback.finish(format_args!(
+          "[{}][{}][{}][{}] {}{LINEFEED}",
+          date,
+          time,
+          target,
+          record.level(),
+          message
+        ))
+      }
     })
     .level(level.to_level_filter());
 

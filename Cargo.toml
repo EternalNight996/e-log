@@ -20,12 +20,12 @@ _tauri = [
   "tauri",
 ]
 tauri-colored = ["fern/colored"]
-default = ["std"]
+default = ["std","_tauri"]
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6.0", default-features = false, optional = true }
+tauri = { version = "1.6", default-features = false, optional = true }
 serde_repr = { version = "0.1", optional = true }
 byte-unit = { version = "5", optional = true }
 fern = { version = "0.6", optional = true }
@@ -44,7 +44,7 @@ e-utils = { version = "0.3" }
 
 [package]
 name = "e-log"
-version = "0.1.7"
+version = "0.1.8"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
