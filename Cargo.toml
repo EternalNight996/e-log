@@ -20,7 +20,7 @@ _tauri = [
   "tauri",
 ]
 tauri-colored = ["fern/colored"]
-default = ["std","_tauri"]
+default = ["std"]
 
 [dependencies]
 serde_json = "1.0"
