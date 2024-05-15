@@ -55,10 +55,11 @@ e-utils = { version = "0.3.36", path = "../e-utils" }
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
 e-log = { path = "./", features = [
-  # "tracing-actix",
+  "tracing-actix",
   # "log-tauri",
-  "log-actix"
+  # "log-actix"
 ] }
+fs2 = "0.4"
 actix-web = { version = "4" }
 
 [[example]]

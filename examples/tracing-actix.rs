@@ -1,4 +1,5 @@
 use std::fs;
+use std::os::windows::fs::OpenOptionsExt;
 use std::path::Path;
 
 use actix_web::body::MessageBody;
@@ -11,10 +12,14 @@ use e_log::actix::{
   subscriber::{layer::SubscriberExt as _, Registry},
   web::{root_span, DefaultRootSpanBuilder, RootSpan, RootSpanBuilder, TracingLogger},
 };
-use e_log::{Level, preload::*, __private::{subscriber::Subscriber,Span}};
+use e_log::{
+  preload::*,
+  Level,
+  __private::{subscriber::Subscriber, Span},
+};
 use e_utils::parse::AutoPath as _;
 use e_utils::system::time::{TimezoneStrategy, LOG_FILE_DATE_FORMAT};
-
+use fs2::FileExt;
 
 /// We will define a custom root span builder to capture additional fields, specific
 /// to our application, on top of the ones provided by `DefaultRootSpanBuilder` out of the box.
@@ -66,7 +71,6 @@ async fn personal_hello(root_span: RootSpan, name: web::Path<String>) -> String 
 /// Compose multiple layers into a `tracing`'s subscriber.
 fn get_subscriber(name: impl AsRef<str>, level: Level) -> impl Subscriber + Send + Sync {
   let formatting_layer = BunyanFormattingLayer::new(name.as_ref().into(), std::io::stdout);
-
   let now = TimezoneStrategy::UseUtc
     .get_now()
     .format(LOG_FILE_DATE_FORMAT);
@@ -76,7 +80,8 @@ fn get_subscriber(name: impl AsRef<str>, level: Level) -> impl Subscriber + Send
     .create(true)
     .write(true)
     .read(true)
-    .open(fpath)
+    .append(true)
+    .open(&fpath)
     .unwrap();
   let file_layer = BunyanFormattingLayer::new(name.as_ref().into(), f);
   Registry::default()

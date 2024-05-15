@@ -14,6 +14,7 @@ macro_rules! cfg_tracing {
         )*
     }
 }
+#[allow(unused)]
 macro_rules! cfg_log_tauri {
     ($($item:item)*) => {
         $(
@@ -22,6 +23,7 @@ macro_rules! cfg_log_tauri {
         )*
     }
 }
+#[allow(unused)]
 macro_rules! cfg_log_actix {
     ($($item:item)*) => {
         $(
@@ -30,6 +32,7 @@ macro_rules! cfg_log_actix {
         )*
     }
 }
+#[allow(unused)]
 macro_rules! cfg_tracing_actix {
     ($($item:item)*) => {
         $(
