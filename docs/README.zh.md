@@ -48,7 +48,7 @@ std = ["log"]
 # trace = ["tracing"]
 # trace-subscriber = ["tracing-subscriber"]
 # trace-appender = ["tracing-appender"]
-_tauri = [
+log-tauri = [
   "std",
   "time",
   "log/kv_unstable",
@@ -64,7 +64,7 @@ default = ["std"]
 # 📖 示例
 ```toml
 [dependencies]
-e-log = { version = "0.1", default-features = false, features = ["_tauri"] }
+e-log = { version = "0.1", default-features = false, features = ["log-tauri"] }
 ```
 
 

@@ -6,13 +6,20 @@ crate-type = ["rlib"]
 proc-macro = false
 
 [features]
-std = ["log"]
-# trace = ["tracing"]
-# trace-subscriber = ["tracing-subscriber"]
-# trace-appender = ["tracing-appender"]
-_tauri = [
-  "std",
-  "time",
+_log = ["log"]
+log-actix = ["env_logger", "_log"]
+tracing-actix = [
+  "tracing-actix-web",
+  "tracing-bunyan-formatter",
+  "_tracing",
+  "tracing-log",
+  "_tracing-subscriber"
+]
+_tracing = ["tracing"]
+_tracing-subscriber = ["tracing-subscriber"]
+_tracing-appender = ["tracing-appender"]
+log-tauri = [
+  "_log",
   "log/kv_unstable",
   "fern",
   "byte-unit",
@@ -20,7 +27,7 @@ _tauri = [
   "tauri",
 ]
 tauri-colored = ["fern/colored"]
-default = ["std"]
+default = []
 
 [dependencies]
 serde_json = "1.0"
@@ -30,21 +37,47 @@ serde_repr = { version = "0.1", optional = true }
 byte-unit = { version = "5", optional = true }
 fern = { version = "0.6", optional = true }
 log = { version = "^0.4.21", optional = true }
-# tracing = { version = "0.1", optional = true }
-# tracing-subscriber = { version = "0.3", features = [
-#   "env-filter",
-#   "json",
-# ], optional = true }
-# tracing-appender = { version = "0.2", optional = true }
-time = { version = "0.3", features = [
-  "formatting",
-  "local-offset",
+tracing-actix-web = { version = "0.7", optional = true }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", features = [
+  "env-filter",
+  "registry",
+  "json",
 ], optional = true }
-e-utils = { version = "0.3" }
+tracing-appender = { version = "0.2", optional = true }
+tracing-bunyan-formatter = { version = "0.3", optional = true }
+env_logger = { version = "0.11", optional = true }
+tracing-log = { version = "0.2", optional = true }
+chrono = { version = "0.4" }
+e-utils = { version = "0.3.36", path = "../e-utils" }
+
+# If you copy one of the examples into a new project, you should be using
+# [dependencies] instead, and delete the **path**.
+[dev-dependencies]
+e-log = { path = "./", features = [
+  # "tracing-actix",
+  # "log-tauri",
+  "log-actix"
+] }
+actix-web = { version = "4" }
+
+[[example]]
+name = "tracing"
+path = "examples/tracing.rs"
+[[example]]
+name = "log"
+path = "examples/log.rs"
+[[example]]
+name = "tracing-actix"
+path = "examples/tracing-actix.rs"
+[[example]]
+name = "log-actix"
+path = "examples/log-actix.rs"
+
 
 [package]
 name = "e-log"
-version = "0.1.8"
+version = "0.2.0-alpha.1"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

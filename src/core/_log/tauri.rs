@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: MIT
 use crate::core::Level;
 use e_utils::parse::MyParseFormat;
+use e_utils::system::time::{TimezoneStrategy, LOG_DATE_FORMAT, LOG_FILE_DATE_FORMAT};
 use e_utils::Result;
 
+pub use fern;
 use fern::FormatCallback;
 use log::{logger, RecordBuilder};
 use log::{LevelFilter, Record};
@@ -23,9 +25,6 @@ use tauri::{
   Manager, Runtime,
 };
 
-pub use fern;
-use time::OffsetDateTime;
-
 const DEFAULT_MAX_FILE_SIZE: u128 = 40000;
 const DEFAULT_ROTATION_STRATEGY: RotationStrategy = RotationStrategy::KeepOne;
 const DEFAULT_TIMEZONE_STRATEGY: TimezoneStrategy = TimezoneStrategy::UseUtc;
@@ -35,7 +34,24 @@ const LINEFEED: &'static str = "\r";
 #[cfg(not(target_os = "windows"))]
 const LINEFEED: &'static str = "";
 
-/// 添加日志
+/// # Example
+/// ```rust
+/// fn init_layer_log(&self) -> Result<TauriBuilder> {
+///   let folder = self.get_log_folder()?;
+///   let fname = self.get_log_fname()?;
+///   folder.auto_create_dir()?;
+///   let log = init_layer_log(
+///     Some(fname),
+///     folder,
+///     self.log.level,
+///     self.log.format.clone(),
+///     self.log.output_list.clone(),
+///     vec!["tao::platform_impl::platform::event_loop::runner".to_string()],
+///   )
+///   .map_err(|e| e.to_string())?;
+///   Ok(log)
+/// }
+/// ```
 pub fn init_layer_log<P>(
   fname: Option<String>,
   folder: P,
@@ -145,26 +161,6 @@ pub enum RotationStrategy {
   ///
   KeepOne,
 }
-///
-#[derive(Debug, Clone)]
-pub enum TimezoneStrategy {
-  ///
-  UseUtc,
-  ///
-  UseLocal,
-}
-
-impl TimezoneStrategy {
-  ///
-  pub fn get_now(&self) -> OffsetDateTime {
-    match self {
-      TimezoneStrategy::UseUtc => OffsetDateTime::now_utc(),
-      TimezoneStrategy::UseLocal => {
-        OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc())
-      } // Fallback to UTC since Rust cannot determine local timezone
-    }
-  }
-}
 
 #[derive(Debug, Serialize, Clone)]
 struct RecordPayload {
@@ -246,13 +242,10 @@ pub struct Builder {
 
 impl Default for Builder {
   fn default() -> Self {
-    let format =
-      time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
-        .unwrap();
     let dispatch = fern::Dispatch::new().format(move |out, message, record| {
       out.finish(format_args!(
         "{}[{}][{}] {}",
-        DEFAULT_TIMEZONE_STRATEGY.get_now().format(&format).unwrap(),
+        DEFAULT_TIMEZONE_STRATEGY.get_now().format(LOG_DATE_FORMAT),
         record.level(),
         record.target(),
         message
@@ -283,13 +276,10 @@ impl Builder {
   pub fn timezone_strategy(mut self, timezone_strategy: TimezoneStrategy) -> Self {
     self.timezone_strategy = timezone_strategy.clone();
 
-    let format =
-      time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
-        .unwrap();
     self.dispatch = fern::Dispatch::new().format(move |out, message, record| {
       out.finish(format_args!(
         "{}[{}][{}] {}",
-        timezone_strategy.get_now().format(&format).unwrap(),
+        timezone_strategy.get_now().format(LOG_DATE_FORMAT),
         record.level(),
         record.target(),
         message
@@ -465,13 +455,7 @@ fn get_log_file_path(
           let to = dir.as_ref().join(format!(
             "{}_{}",
             log_name,
-            timezone_strategy
-              .get_now()
-              .format(
-                &time::format_description::parse("[year]-[month]-[day]_[hour]-[minute]-[second]")
-                  .unwrap()
-              )
-              .unwrap(),
+            timezone_strategy.get_now().format(LOG_FILE_DATE_FORMAT),
           ));
           if to.is_file() {
             // designated rotated log file name already exists
