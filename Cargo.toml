@@ -6,27 +6,23 @@ crate-type = ["rlib"]
 proc-macro = false
 
 [features]
-_log = ["log"]
-log-actix = ["env_logger", "_log"]
+log-actix = ["env_logger", "log"]
 tracing-actix = [
   "tracing-actix-web",
   "tracing-bunyan-formatter",
-  "_tracing",
+  "tracing",
   "tracing-log",
 ]
-_tracing = ["tracing"]
-_tracing-subscriber = ["tracing-subscriber"]
 tracing-appender = [
   "tracing-subscriber/fmt",
   "tracing-subscriber/std",
-  "_tracing-subscriber",
+  "tracing-subscriber",
   "thiserror",
-  "parking_lot",
   "crossbeam-channel",
   "time",
 ]
 log-tauri = [
-  "_log",
+  "log",
   "log/kv_unstable",
   "fern",
   "byte-unit",
@@ -72,7 +68,8 @@ time = { version = "0.3", features = [
 e-log = { path = "./", features = [
   "tracing-actix",
   "tracing-appender",
-  "_tracing-subscriber",
+  "tracing-subscriber",
+  "parking_lot",
   # "log-tauri",
   # "log-actix"
 ] }

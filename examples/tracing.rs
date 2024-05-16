@@ -1,4 +1,4 @@
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 fn main() {
     use e_log::preload::*;
     info!("info");
@@ -7,7 +7,7 @@ fn main() {
     trace!("trace");
     warn!("warn");
 }
-#[cfg(not(feature = "_tracing"))]
+#[cfg(not(feature = "tracing"))]
 fn main() {
     
 }

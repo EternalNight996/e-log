@@ -8,6 +8,7 @@ async fn main() -> std::io::Result<()> {
   use actix_web::dev::{ServiceRequest, ServiceResponse};
   use actix_web::{web, App, Error, HttpServer};
   use e_log::appender;
+  use e_log::appender::non_blocking::WorkerGuard;
   use e_log::logger::{
     formatter::{BunyanFormattingLayer, JsonStorageLayer},
     init_subscriber,
@@ -71,7 +72,7 @@ async fn main() -> std::io::Result<()> {
   }
 
   /// Compose multiple layers into a `tracing`'s subscriber.
-  fn get_subscriber(name: impl AsRef<str>, level: Level) -> impl Subscriber + Send + Sync {
+  fn get_subscriber(level: Level) -> (impl Subscriber + Send + Sync, WorkerGuard) {
     let now = TimezoneStrategy::UseUtc
       .get_now()
       .format(LOG_FILE_DATE_FORMAT);
@@ -79,27 +80,22 @@ async fn main() -> std::io::Result<()> {
     let folder = Path::new("logs");
     folder.auto_create_dir().unwrap();
 
-    let f = fs::OpenOptions::new()
-      .create(true)
-      .write(true)
-      .read(true)
-      .append(true)
-      .lock_share(e_utils::fs::FileShare::ReadWrite)
-      .open(folder.join(&fname))
-      .unwrap();
-    let (non_blocking_appender, _guard) = appender::non_blocking();
-    let f = appender::rolling::;
-    let formatting_layer = BunyanFormattingLayer::new(name.as_ref().into(), f);
-    // let base_layer = subscriber::fmt::layer().with_writer(non_blocking_appender);
-    Registry::default()
-      .with(level.to_level_filter())
-      // .with(base_layer)
-      .with(formatting_layer)
-    // .with(JsonStorageLayer)
-    // .with(file_layer)
+    let roll = appender::rolling::never(folder, fname);
+    let (f, guard) = appender::non_blocking(roll);
+    let file_layer = subscriber::fmt::layer().with_ansi(false).with_writer(f);
+    let base_layer = subscriber::fmt::layer()
+      .with_ansi(false)
+      .with_writer(std::io::stdout);
+    (
+      Registry::default()
+        .with(level.to_level_filter())
+        .with(base_layer)
+        .with(file_layer),
+      guard,
+    )
   }
 
-  let subscriber = get_subscriber("tracing-actix-web-demo", Level::Info);
+  let (subscriber, _guard) = get_subscriber(Level::Info);
   init_subscriber(subscriber);
 
   HttpServer::new(move || {

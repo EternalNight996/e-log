@@ -11,9 +11,9 @@ cfg_log! {
   pub use _log::*;
 }
 use e_utils::{CResult, Result};
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 pub use log::LevelFilter;
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 pub use tracing::level_filters::LevelFilter;
 
 use serde::{Deserialize, Serialize};
@@ -161,7 +161,7 @@ impl Level {
   }
 }
 
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 impl From<LevelFilter> for Level {
   fn from(value: LevelFilter) -> Self {
     match value {
@@ -174,7 +174,7 @@ impl From<LevelFilter> for Level {
     }
   }
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 impl From<LevelFilter> for Level {
   fn from(value: LevelFilter) -> Self {
     match value {
@@ -189,7 +189,7 @@ impl From<LevelFilter> for Level {
 }
 impl Level {
   /// 日志兼容Std
-  #[cfg(feature = "_log")]
+  #[cfg(feature = "log")]
   pub fn to_level_filter(&self) -> LevelFilter {
     match self {
       Level::Off => LevelFilter::Off,
@@ -201,7 +201,7 @@ impl Level {
     }
   }
   /// 日志兼容trace
-  #[cfg(feature = "_tracing")]
+  #[cfg(feature = "tracing")]
   pub fn to_level_filter(&self) -> LevelFilter {
     match self {
       Level::Off => LevelFilter::OFF,
@@ -224,14 +224,14 @@ impl core::fmt::Display for Level {
   }
 }
 
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 impl From<&str> for Level {
   fn from(s: &str) -> Self {
     let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::Off).into();
     level
   }
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 impl From<&str> for Level {
   fn from(s: &str) -> Self {
     let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::OFF).into();

@@ -1,7 +1,7 @@
 macro_rules! cfg_log {
     ($($item:item)*) => {
         $(
-            #[cfg(feature = "_log")]
+            #[cfg(feature = "log")]
             $item
         )*
     }
@@ -9,7 +9,7 @@ macro_rules! cfg_log {
 macro_rules! cfg_tracing {
     ($($item:item)*) => {
         $(
-            #[cfg(feature = "_tracing")]
+            #[cfg(feature = "tracing")]
             $item
         )*
     }
@@ -54,12 +54,12 @@ macro_rules! cfg_tracing_appender {
 macro_rules! cfg_must {
   ($($item:item)*) => {
       $(
-        #[cfg(any(feature="_log", feature="_tracing"))]
+        #[cfg(any(feature="log", feature="tracing"))]
           $item
       )*
   }
 }
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! info {
@@ -87,7 +87,7 @@ macro_rules! info {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Info, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Info, $($arg)+))
 }
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! warn {
@@ -115,7 +115,7 @@ macro_rules! warn {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Warn, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Warn, $($arg)+))
 }
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! error {
@@ -143,7 +143,7 @@ macro_rules! error {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Error, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, $($arg)+))
 }
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! debug {
@@ -171,7 +171,7 @@ macro_rules! debug {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Debug, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, $($arg)+))
 }
-#[cfg(feature = "_log")]
+#[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! trace {
@@ -200,7 +200,7 @@ macro_rules! trace {
   ($($arg:tt)+) => ({$crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Trace, $($arg)+)})
 }
 
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! info {
@@ -228,7 +228,7 @@ macro_rules! info {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::info!(target:$target,$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::info!($($arg)+))
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! warn {
@@ -256,7 +256,7 @@ macro_rules! warn {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::warn!(target:$target,$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::warn!($($arg)+))
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! error {
@@ -284,7 +284,7 @@ macro_rules! error {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::error!(target:$target,$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::error!($($arg)+))
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! debug {
@@ -312,7 +312,7 @@ macro_rules! debug {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::debug!(target:$target,$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::debug!($($arg)+))
 }
-#[cfg(feature = "_tracing")]
+#[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! trace {
