@@ -1,18 +1,19 @@
-use actix_web::middleware::Logger;
-use actix_web::{web, App, HttpServer};
-use e_log::{preload::*, Level, init_log_layer};
-
-async fn hello() -> &'static str {
-  info!("hello");
-  warn!("hello");
-  debug!("hello");
-  error!("hello");
-  trace!("hello");
-  "Hello world!"
-}
-
+#[cfg(feature = "log-actix")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+  use actix_web::middleware::Logger;
+  use actix_web::{web, App, HttpServer};
+  use e_log::{init_log_layer, preload::*, Level};
+
+  async fn hello() -> &'static str {
+    info!("hello");
+    warn!("hello");
+    debug!("hello");
+    error!("hello");
+    trace!("hello");
+    "Hello world!"
+  }
+
   init_log_layer(Level::Info);
   HttpServer::new(move || {
     App::new()
@@ -41,3 +42,6 @@ async fn main() -> std::io::Result<()> {
 
   Ok(())
 }
+
+#[cfg(not(feature = "log-actix"))]
+fn main() {}

@@ -23,6 +23,7 @@ static INIT: Once = Once::new();
 /// };
 /// use e_log::{Level, preload::*, __private::{subscriber::Subscriber,Span}};
 /// use e_utils::parse::AutoPath as _;
+/// use e_utils::fs::FileOptionsExt;
 /// use e_utils::system::time::{TimezoneStrategy, LOG_FILE_DATE_FORMAT};
 /// /// We will define a custom root span builder to capture additional fields, specific
 /// /// to our application, on top of the ones provided by `DefaultRootSpanBuilder` out of the box.
@@ -78,6 +79,7 @@ static INIT: Once = Once::new();
 ///     .create(true)
 ///     .write(true)
 ///     .read(true)
+///     .lock_share(e_utils::fs::FileShare::Read)
 ///     .open(fpath)
 ///     .unwrap();
 ///   let file_layer = BunyanFormattingLayer::new(name.as_ref().into(), f);
