@@ -7,11 +7,11 @@ async fn main() -> std::io::Result<()> {
   use actix_web::body::MessageBody;
   use actix_web::dev::{ServiceRequest, ServiceResponse};
   use actix_web::{web, App, Error, HttpServer};
-
-  use e_log::actix::{
+  use e_log::appender;
+  use e_log::logger::{
     formatter::{BunyanFormattingLayer, JsonStorageLayer},
     init_subscriber,
-    subscriber::{layer::SubscriberExt as _, Registry},
+    subscriber::{self, layer::SubscriberExt as _, Registry},
     web::{root_span, DefaultRootSpanBuilder, RootSpan, RootSpanBuilder, TracingLogger},
   };
   use e_log::{
@@ -75,24 +75,28 @@ async fn main() -> std::io::Result<()> {
     let now = TimezoneStrategy::UseUtc
       .get_now()
       .format(LOG_FILE_DATE_FORMAT);
-    let fpath = Path::new("logs").join(format!("test.{}.log", now));
-    fpath.auto_create_dir().unwrap();
+    let fname = format!("test.{}.log", now);
+    let folder = Path::new("logs");
+    folder.auto_create_dir().unwrap();
+
     let f = fs::OpenOptions::new()
       .create(true)
       .write(true)
       .read(true)
       .append(true)
-      .lock_share(e_utils::fs::FileShare::Read)
-      .open(&fpath)
+      .lock_share(e_utils::fs::FileShare::ReadWrite)
+      .open(folder.join(&fname))
       .unwrap();
-    let formatting_layer = BunyanFormattingLayer::new(name.as_ref().into(), std::io::stdout);
-    let file_layer = BunyanFormattingLayer::new(name.as_ref().into(), f);
-
+    let (non_blocking_appender, _guard) = appender::non_blocking();
+    let f = appender::rolling::;
+    let formatting_layer = BunyanFormattingLayer::new(name.as_ref().into(), f);
+    // let base_layer = subscriber::fmt::layer().with_writer(non_blocking_appender);
     Registry::default()
       .with(level.to_level_filter())
-      .with(JsonStorageLayer)
+      // .with(base_layer)
       .with(formatting_layer)
-      .with(file_layer)
+    // .with(JsonStorageLayer)
+    // .with(file_layer)
   }
 
   let subscriber = get_subscriber("tracing-actix-web-demo", Level::Info);

@@ -41,6 +41,15 @@ macro_rules! cfg_tracing_actix {
         )*
     }
 }
+#[allow(unused)]
+macro_rules! cfg_tracing_appender {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "tracing-appender")]
+            $item
+        )*
+    }
+}
 
 macro_rules! cfg_must {
   ($($item:item)*) => {

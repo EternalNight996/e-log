@@ -13,11 +13,18 @@ tracing-actix = [
   "tracing-bunyan-formatter",
   "_tracing",
   "tracing-log",
-  "_tracing-subscriber"
 ]
 _tracing = ["tracing"]
 _tracing-subscriber = ["tracing-subscriber"]
-_tracing-appender = ["tracing-appender"]
+tracing-appender = [
+  "tracing-subscriber/fmt",
+  "tracing-subscriber/std",
+  "_tracing-subscriber",
+  "thiserror",
+  "parking_lot",
+  "crossbeam-channel",
+  "time",
+]
 log-tauri = [
   "_log",
   "log/kv_unstable",
@@ -44,22 +51,35 @@ tracing-subscriber = { version = "0.3", features = [
   "registry",
   "json",
 ], optional = true }
-tracing-appender = { version = "0.2", optional = true }
 tracing-bunyan-formatter = { version = "0.3", optional = true }
 env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
 chrono = { version = "0.4" }
-e-utils = { version = "^0.3.38-beta.2", path = "../e-utils",features = ["fs_ext"]}
+e-utils = { version = "^0.3.38-beta.2", path = "../e-utils", features = [
+  "fs_ext",
+] }
+crossbeam-channel = { version = "0.5", optional = true }
+parking_lot = { version = "0.12", optional = true }
+thiserror = { version = "1", optional = true }
+time = { version = "0.3", features = [
+  "formatting",
+  "parsing",
+], default-features = false, optional = true }
 
 # If you copy one of the examples into a new project, you should be using
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
 e-log = { path = "./", features = [
   "tracing-actix",
+  "tracing-appender",
+  "_tracing-subscriber",
   # "log-tauri",
   # "log-actix"
 ] }
 actix-web = { version = "4" }
+tempfile = "3"
+criterion = { version = "0.3.6", default-features = false }
+
 
 [[example]]
 name = "tracing"

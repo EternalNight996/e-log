@@ -1,12 +1,14 @@
 cfg_log_tauri! {
   /// Tuari
-  pub mod tauri;
-  pub use tauri::*;
+  #[path="./tauri.rs"]
+  pub mod logger;
+  pub use logger::*;
 }
 cfg_log_actix! {
   /// Tuari
-  pub mod actix;
-  pub use actix::*;
+  #[path="./actix.rs"]
+  pub mod logger;
+  pub use logger::*;
 }
 /// Private
 pub mod __private;
