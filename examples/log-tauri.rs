@@ -1,10 +1,9 @@
 #![allow(unused)]
 #[cfg(feature = "log-tauri")]
 fn main() {
-  use e_log::init_layer_log;
+  use e_log::logger::{init_layer_log,TauriBuilder};
   use e_log::Level;
   use e_log::LogTarget;
-  use e_log::TauriBuilder;
   use e_utils::parse::AutoPath as _;
   use e_utils::parse::MyParseFormat as _;
   #[inline]

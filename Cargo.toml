@@ -9,7 +9,6 @@ proc-macro = false
 log-actix = ["env_logger", "log"]
 tracing-actix = [
   "tracing-actix-web",
-  "tracing-bunyan-formatter",
   "tracing",
   "tracing-log",
 ]
@@ -30,7 +29,7 @@ log-tauri = [
   "tauri",
 ]
 tauri-colored = ["fern/colored"]
-default = ["log"]
+default = []
 
 [dependencies]
 serde_json = "1.0"
@@ -47,7 +46,6 @@ tracing-subscriber = { version = "0.3", features = [
   "registry",
   "json",
 ], optional = true }
-tracing-bunyan-formatter = { version = "0.3", optional = true }
 env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
 chrono = { version = "0.4" }
@@ -64,12 +62,12 @@ time = { version = "0.3", features = [
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
 e-log = { path = "./", features = [
-  # "tracing-actix",
-  # "tracing-appender",
-  # "tracing-subscriber",
-  # "parking_lot",
+  "tracing-actix",
+  "tracing-appender",
+  "tracing-subscriber",
+  "parking_lot",
   # "log-tauri",
-  # "log-actix"
+  # "log-actix",
 ] }
 tauri = { version = "1.6" }
 tokio = { version = "1" }

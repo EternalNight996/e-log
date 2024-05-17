@@ -22,7 +22,6 @@
 // #![cfg_attr(loom, allow(dead_code, unreachable_pub))]
 
 /// 宏
-#[cfg(any(feature="log", feature="tracing"))]
 #[path = "./macros.rs"]
 #[macro_use]
 mod macros;

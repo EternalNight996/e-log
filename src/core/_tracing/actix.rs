@@ -2,7 +2,6 @@ use base::LogTracer;
 use std::sync::Once;
 use tracing::{subscriber::set_global_default, Subscriber};
 pub use tracing_actix_web as web;
-pub use tracing_bunyan_formatter as formatter;
 pub use tracing_log as base;
 #[cfg(feature = "tracing-subscriber")]
 pub use tracing_subscriber as subscriber;
