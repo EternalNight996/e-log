@@ -51,7 +51,7 @@ tracing-bunyan-formatter = { version = "0.3", optional = true }
 env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
 chrono = { version = "0.4" }
-e-utils = { version = "^0.3.38-beta.2", path = "../e-utils", features = [
+e-utils = { version = "^0.3.38",  features = [
   "fs_ext",
 ] }
 crossbeam-channel = { version = "0.5", optional = true }
