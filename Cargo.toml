@@ -30,7 +30,7 @@ log-tauri = [
   "tauri",
 ]
 tauri-colored = ["fern/colored"]
-default = []
+default = ["log"]
 
 [dependencies]
 serde_json = "1.0"
@@ -68,7 +68,7 @@ e-log = { path = "./", features = [
   # "tracing-appender",
   # "tracing-subscriber",
   # "parking_lot",
-  "log-tauri",
+  # "log-tauri",
   # "log-actix"
 ] }
 tauri = { version = "1.6" }
@@ -94,7 +94,7 @@ path = "examples/log-actix.rs"
 
 [package]
 name = "e-log"
-version = "0.2.0-alpha.3"
+version = "0.2.0-alpha.4"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

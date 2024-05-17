@@ -1,3 +1,4 @@
+#[allow(unused)]
 macro_rules! cfg_log {
     ($($item:item)*) => {
         $(
@@ -6,6 +7,7 @@ macro_rules! cfg_log {
         )*
     }
 }
+#[allow(unused)]
 macro_rules! cfg_tracing {
     ($($item:item)*) => {
         $(
