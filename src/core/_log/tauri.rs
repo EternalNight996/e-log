@@ -56,34 +56,16 @@ const LINEFEED: &'static str = "";
 ///   Ok(log)
 /// }
 /// ```
-pub fn init_layer_log<P>(
+pub fn init_layer_log(
   fname: Option<String>,
-  folder: P,
   level: Level,
   _format: String,
-  output_list: Vec<String>,
+  output_list: impl IntoIterator<Item = LogTarget>,
   filter_target: Vec<String>,
-) -> Result<Builder>
-where
-  P: AsRef<Path> + Clone,
-{
-  let olist: Vec<LogTarget> = output_list
-    .into_iter()
-    .filter_map(|x| {
-      Some(match &*x {
-        "stdout" => LogTarget::Stdout,
-        "stderr" => LogTarget::Stderr,
-        "folder" => LogTarget::Folder(folder.as_ref().to_path_buf()),
-        "outDir_text" => LogTarget::OutDir(crate::LogOutDirType::Text),
-        "outDir_json" => LogTarget::OutDir(crate::LogOutDirType::Json),
-        "web" => LogTarget::Web,
-        _ => return None,
-      })
-    })
-    .collect();
+) -> Result<Builder> {
   let mut log = Builder::default()
     .rotation_strategy(RotationStrategy::KeepAll)
-    .targets(olist)
+    .targets(output_list)
     .format(move |callback, message, record| {
       let target = record.target();
       if filter_target.iter().find(|x| &***x == target).is_none() {
@@ -312,19 +294,56 @@ impl Builder {
   /// Note: This does not modify the directory logs go into. For that refer to `LogTarget::Folder`.
   ///
   /// # Examples
-  ///
-  /// ```
-  /// use tauri_plugin_log::Builder;
-  /// use e_log::{LogOutDirType,LogTarget};
-  /// let name = "custom-name";
-  /// let builder = Builder::default()
-  ///     .targets([
-  ///         LogTarget::OutDir(LogOutDirType::Text)
-  ///     ])
-  ///     .log_name(name)
-  ///     .build()
-  /// ); // Outputs content to custom-name.log
-  ///
+  /// ```rust
+  /// fn main() {
+  ///   use e_log::init_layer_log;
+  ///   use e_log::Level;
+  ///   use e_log::LogTarget;
+  ///   use e_log::TauriBuilder;
+  ///   use e_utils::parse::AutoPath as _;
+  ///   use e_utils::parse::MyParseFormat;
+  ///   #[inline]
+  ///   fn init_layer(
+  ///     folder: &str,
+  ///     fname: Option<String>,
+  ///     level: Level,
+  ///     out_str: Vec<&str>,
+  ///   ) -> e_utils::Result<TauriBuilder> {
+  ///     folder.auto_create_dir()?;
+  ///     let out_list: e_utils::Result<Vec<LogTarget>> = out_str
+  ///       .iter()
+  ///       .map(|x| {
+  ///         LogTarget::from_str(*x).and_then(|x2| {
+  ///           Ok(if let LogTarget::Folder(_) = &x2 {
+  ///             LogTarget::Folder(std::path::Path::new(folder).to_path_buf())
+  ///           } else {
+  ///             x2
+  ///           })
+  ///         })
+  ///       })
+  ///       .collect();
+  ///     let log = init_layer_log(
+  ///       fname,
+  ///       level,
+  ///       "".to_string(),
+  ///       out_list?,
+  ///       vec!["tao::platform_impl::platform::event_loop::runner".to_string()],
+  ///     )?;
+  ///     Ok(log)
+  ///   }
+  ///   let logger = init_layer(
+  ///     &"{cwd}\\logs".parse_path(),
+  ///     Some("test.log".into()),
+  ///     Level::Info,
+  ///     vec!["Stdout", "Web", "OutDirJson", "Folder"],
+  ///   )
+  ///   .unwrap()
+  ///   .build();
+  ///   tauri::Builder::default()
+  ///     .plugin(logger)
+  ///     .run(tauri::generate_context!())
+  ///     .expect("error while running tauri application");
+  /// }
   /// ```
   pub fn log_name<S: Into<String>>(mut self, log_name: S) -> Self {
     self.log_name = Some(log_name.into());

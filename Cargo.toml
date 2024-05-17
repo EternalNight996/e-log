@@ -51,9 +51,7 @@ tracing-bunyan-formatter = { version = "0.3", optional = true }
 env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
 chrono = { version = "0.4" }
-e-utils = { version = "^0.3.38",  features = [
-  "fs_ext",
-] }
+e-utils = { version = "^0.3", features = ["fs_ext"] }
 crossbeam-channel = { version = "0.5", optional = true }
 parking_lot = { version = "0.12", optional = true }
 thiserror = { version = "1", optional = true }
@@ -66,13 +64,15 @@ time = { version = "0.3", features = [
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
 e-log = { path = "./", features = [
-  "tracing-actix",
-  "tracing-appender",
-  "tracing-subscriber",
-  "parking_lot",
-  # "log-tauri",
+  # "tracing-actix",
+  # "tracing-appender",
+  # "tracing-subscriber",
+  # "parking_lot",
+  "log-tauri",
   # "log-actix"
 ] }
+tauri = { version = "1.6" }
+tokio = { version = "1" }
 actix-web = { version = "4" }
 tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }

@@ -10,14 +10,14 @@ cfg_log! {
   #[allow(unused_imports)]
   pub use _log::*;
 }
+pub use e_utils::fs::FileShare;
 use e_utils::{CResult, Result};
 #[cfg(feature = "log")]
 pub use log::LevelFilter;
+use serde::{Deserialize, Serialize};
+use std::{borrow::Cow, path::PathBuf, str::FromStr};
 #[cfg(feature = "tracing")]
 pub use tracing::level_filters::LevelFilter;
-pub use e_utils::fs::FileShare;
-use serde::{Deserialize, Serialize};
-use std::{borrow::Cow, str::FromStr};
 
 /// 针对结果的解析打印
 pub trait AutoLevelRes<T, S: Serialize> {
@@ -245,7 +245,6 @@ impl From<String> for Level {
   }
 }
 
-
 /// An enum representing the available targets of the logger.
 #[derive(Debug)]
 pub enum LogTarget {
@@ -272,11 +271,50 @@ pub enum LogTarget {
   /// This requires the webview to subscribe to log events, via this plugins `attachConsole` function.
   Web,
 }
+impl ToString for LogTarget {
+  fn to_string(&self) -> String {
+    match self {
+      LogTarget::Stdout => "Stdout",
+      LogTarget::Stderr => "Stderr",
+      LogTarget::Folder(_) => "Folder",
+      LogTarget::OutDir(x) => match x {
+        LogOutDirType::Json => "OutDirJson",
+        LogOutDirType::Text => "OutDirText",
+      },
+      LogTarget::Web => "Web",
+    }
+    .to_string()
+  }
+}
+impl LogTarget {
+  /// 解析
+  pub fn from_str(s: &str) -> e_utils::Result<Self> {
+    Ok(match s {
+      "Stdout" => Self::Stdout,
+      "Stderr" => Self::Stderr,
+      "Folder" => Self::Folder(PathBuf::new()),
+      "OutDirJson" => Self::OutDir(LogOutDirType::Json),
+      "OutDirText" => Self::OutDir(LogOutDirType::Text),
+      "Web" => Self::Web,
+      _ => return Err(e_utils::Error::String(s.to_string())),
+    })
+  }
+  /// 设置Folder路径
+  pub fn set_folder<P>(&mut self, path: P) -> &mut Self
+  where
+    P: AsRef<std::path::Path>,
+  {
+    if let Self::Folder(_) = self {
+      *self = Self::Folder(path.as_ref().to_path_buf());
+    }
+    self
+  }
+}
 /// 文本格式
 #[derive(Debug)]
 pub enum LogOutDirType {
   /// 文本
   Text,
   /// Json
-  Json
+  Json,
 }
