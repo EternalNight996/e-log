@@ -244,3 +244,39 @@ impl From<String> for Level {
     s.as_str().into()
   }
 }
+
+
+/// An enum representing the available targets of the logger.
+#[derive(Debug)]
+pub enum LogTarget {
+  /// Print logs to stdout.
+  Stdout,
+  /// Print logs to stderr.
+  Stderr,
+  /// Write logs to the given directory.
+  ///
+  /// The plugin will ensure the directory exists before writing logs.
+  Folder(std::path::PathBuf),
+  /// Write logs to the OS specific logs directory.
+  ///
+  /// ### Platform-specific
+  ///
+  /// |Platform | Value                                         | Example                                        |
+  /// | ------- | --------------------------------------------- | ---------------------------------------------- |
+  /// | Linux   | `{configDir}/{bundleIdentifier}`              | `/home/alice/.config/com.tauri.dev`            |
+  /// | macOS   | `{homeDir}/Library/Logs/{bundleIdentifier}`   | `/Users/Alice/Library/Logs/com.tauri.dev`      |
+  /// | Windows | `{configDir}/{bundleIdentifier}`              | `C:\Users\Alice\AppData\Roaming\com.tauri.dev` |
+  OutDir(LogOutDirType),
+  /// Forward logs to the webview (via the `log://log` event).
+  ///
+  /// This requires the webview to subscribe to log events, via this plugins `attachConsole` function.
+  Web,
+}
+/// 文本格式
+#[derive(Debug)]
+pub enum LogOutDirType {
+  /// 文本
+  Text,
+  /// Json
+  Json
+}

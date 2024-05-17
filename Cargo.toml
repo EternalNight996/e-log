@@ -66,11 +66,11 @@ time = { version = "0.3", features = [
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
 e-log = { path = "./", features = [
-  "tracing-actix",
-  "tracing-appender",
-  "tracing-subscriber",
-  "parking_lot",
-  # "log-tauri",
+  # "tracing-actix",
+  # "tracing-appender",
+  # "tracing-subscriber",
+  # "parking_lot",
+  "log-tauri",
   # "log-actix"
 ] }
 actix-web = { version = "4" }

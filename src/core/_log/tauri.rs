@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 use crate::core::Level;
+use crate::LogTarget;
 use e_utils::parse::MyParseFormat;
 use e_utils::system::time::{TimezoneStrategy, LOG_DATE_FORMAT, LOG_FILE_DATE_FORMAT};
 use e_utils::Result;
@@ -28,7 +29,10 @@ use tauri::{
 const DEFAULT_MAX_FILE_SIZE: u128 = 40000;
 const DEFAULT_ROTATION_STRATEGY: RotationStrategy = RotationStrategy::KeepOne;
 const DEFAULT_TIMEZONE_STRATEGY: TimezoneStrategy = TimezoneStrategy::UseUtc;
-const DEFAULT_LOG_TARGETS: [LogTarget; 2] = [LogTarget::Stdout, LogTarget::LogDir];
+const DEFAULT_LOG_TARGETS: [LogTarget; 2] = [
+  LogTarget::Stdout,
+  LogTarget::OutDir(crate::LogOutDirType::Text),
+];
 #[cfg(target_os = "windows")]
 const LINEFEED: &'static str = "\r";
 #[cfg(not(target_os = "windows"))]
@@ -70,8 +74,9 @@ where
         "stdout" => LogTarget::Stdout,
         "stderr" => LogTarget::Stderr,
         "folder" => LogTarget::Folder(folder.as_ref().to_path_buf()),
-        "logDir" => LogTarget::LogDir,
-        "webview" => LogTarget::Webview,
+        "outDir_text" => LogTarget::OutDir(crate::LogOutDirType::Text),
+        "outDir_json" => LogTarget::OutDir(crate::LogOutDirType::Json),
+        "web" => LogTarget::Web,
         _ => return None,
       })
     })
@@ -166,33 +171,6 @@ pub enum RotationStrategy {
 struct RecordPayload {
   message: String,
   level: LogLevel,
-}
-
-/// An enum representing the available targets of the logger.
-#[derive(Debug)]
-pub enum LogTarget {
-  /// Print logs to stdout.
-  Stdout,
-  /// Print logs to stderr.
-  Stderr,
-  /// Write logs to the given directory.
-  ///
-  /// The plugin will ensure the directory exists before writing logs.
-  Folder(PathBuf),
-  /// Write logs to the OS specific logs directory.
-  ///
-  /// ### Platform-specific
-  ///
-  /// |Platform | Value                                         | Example                                        |
-  /// | ------- | --------------------------------------------- | ---------------------------------------------- |
-  /// | Linux   | `{configDir}/{bundleIdentifier}`              | `/home/alice/.config/com.tauri.dev`            |
-  /// | macOS   | `{homeDir}/Library/Logs/{bundleIdentifier}`   | `/Users/Alice/Library/Logs/com.tauri.dev`      |
-  /// | Windows | `{configDir}/{bundleIdentifier}`              | `C:\Users\Alice\AppData\Roaming\com.tauri.dev` |
-  LogDir,
-  /// Forward logs to the webview (via the `log://log` event).
-  ///
-  /// This requires the webview to subscribe to log events, via this plugins `attachConsole` function.
-  Webview,
 }
 
 #[tauri::command]
@@ -398,22 +376,31 @@ impl Builder {
               )?)?
               .into()
             }
-            LogTarget::LogDir => {
+            LogTarget::OutDir(otype) => {
               let path = app_handle.path_resolver().app_log_dir().unwrap();
               if !path.exists() {
                 fs::create_dir_all(&path).unwrap();
               }
-
-              fern::log_file(get_log_file_path(
-                &path,
-                log_name,
-                &self.rotation_strategy,
-                &self.timezone_strategy,
-                self.max_file_size,
-              )?)?
-              .into()
+              match otype {
+                crate::LogOutDirType::Text => fern::log_file(get_log_file_path(
+                  &path,
+                  log_name,
+                  &self.rotation_strategy,
+                  &self.timezone_strategy,
+                  self.max_file_size,
+                )?)?
+                .into(),
+                crate::LogOutDirType::Json => fern::log_file(get_log_file_path(
+                  &path,
+                  log_name,
+                  &self.rotation_strategy,
+                  &self.timezone_strategy,
+                  self.max_file_size,
+                )?)?
+                .into(),
+              }
             }
-            LogTarget::Webview => {
+            LogTarget::Web => {
               let app_handle = app_handle.clone();
 
               fern::Output::call(move |record| {
