@@ -315,10 +315,11 @@ impl Builder {
   ///
   /// ```
   /// use tauri_plugin_log::Builder;
+  /// use e_log::{LogOutDirType,LogTarget};
   /// let name = "custom-name";
   /// let builder = Builder::default()
   ///     .targets([
-  ///         LogTarget::LogDir
+  ///         LogTarget::OutDir(LogOutDirType::Text)
   ///     ])
   ///     .log_name(name)
   ///     .build()

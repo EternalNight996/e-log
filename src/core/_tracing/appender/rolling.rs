@@ -29,6 +29,7 @@
 use super::sync::{RwLock, RwLockReadGuard};
 #[cfg(target_os = "windows")]
 use e_utils::fs::FileOptionsExt;
+use e_utils::fs::FileShare;
 use std::{
   fmt::{self, Debug},
   fs::{self, File, OpenOptions},
@@ -90,6 +91,7 @@ pub struct RollingFileAppender {
   writer: RwLock<File>,
   #[cfg(test)]
   now: Box<dyn Fn() -> OffsetDateTime + Send + Sync>,
+  share_type: FileShare,
 }
 
 /// A [writer] that writes to a rolling log file.
@@ -144,6 +146,7 @@ impl RollingFileAppender {
     rotation: Rotation,
     directory: impl AsRef<Path>,
     filename_prefix: impl AsRef<Path>,
+    share_type: FileShare,
   ) -> RollingFileAppender {
     let filename_prefix = filename_prefix
       .as_ref()
@@ -152,7 +155,7 @@ impl RollingFileAppender {
     Self::builder()
       .rotation(rotation)
       .filename_prefix(filename_prefix)
-      .build(directory)
+      .build(directory, share_type)
       .expect("initializing rolling file appender failed")
   }
 
@@ -186,7 +189,11 @@ impl RollingFileAppender {
     Builder::new()
   }
 
-  fn from_builder(builder: &Builder, directory: impl AsRef<Path>) -> Result<Self, InitError> {
+  fn from_builder(
+    builder: &Builder,
+    directory: impl AsRef<Path>,
+    share_type: FileShare,
+  ) -> Result<Self, InitError> {
     let Builder {
       ref rotation,
       ref prefix,
@@ -202,12 +209,14 @@ impl RollingFileAppender {
       prefix.clone(),
       suffix.clone(),
       *max_files,
+      share_type.clone(),
     )?;
     Ok(Self {
       state,
       writer,
       #[cfg(test)]
       now: Box::new(OffsetDateTime::now_utc),
+      share_type,
     })
   }
 
@@ -228,7 +237,9 @@ impl io::Write for RollingFileAppender {
     if let Some(current_time) = self.state.should_rollover(now) {
       let _did_cas = self.state.advance_date(now, current_time);
       debug_assert!(_did_cas, "if we have &mut access to the appender, no other thread can have advanced the timestamp...");
-      self.state.refresh_writer(now, writer);
+      self
+        .state
+        .refresh_writer(now, writer, self.share_type.clone());
     }
     writer.write(buf)
   }
@@ -248,7 +259,9 @@ impl<'a> tracing_subscriber::fmt::writer::MakeWriter<'a> for RollingFileAppender
       // Did we get the right to lock the file? If not, another thread
       // did it and we can just make a writer.
       if self.state.advance_date(now, current_time) {
-        self.state.refresh_writer(now, &mut self.writer.write());
+        self
+          .state
+          .refresh_writer(now, &mut self.writer.write(), self.share_type.clone());
       }
     }
     RollingWriter(self.writer.read())
@@ -297,8 +310,9 @@ impl fmt::Debug for RollingFileAppender {
 pub fn minutely(
   directory: impl AsRef<Path>,
   file_name_prefix: impl AsRef<Path>,
+  share_type: FileShare,
 ) -> RollingFileAppender {
-  RollingFileAppender::new(Rotation::MINUTELY, directory, file_name_prefix)
+  RollingFileAppender::new(Rotation::MINUTELY, directory, file_name_prefix, share_type)
 }
 
 /// Creates an hourly-rotating file appender.
@@ -332,8 +346,9 @@ pub fn minutely(
 pub fn hourly(
   directory: impl AsRef<Path>,
   file_name_prefix: impl AsRef<Path>,
+  share_type: FileShare,
 ) -> RollingFileAppender {
-  RollingFileAppender::new(Rotation::HOURLY, directory, file_name_prefix)
+  RollingFileAppender::new(Rotation::HOURLY, directory, file_name_prefix, share_type)
 }
 
 /// Creates a daily-rotating file appender.
@@ -368,8 +383,9 @@ pub fn hourly(
 pub fn daily(
   directory: impl AsRef<Path>,
   file_name_prefix: impl AsRef<Path>,
+  share_type: FileShare,
 ) -> RollingFileAppender {
-  RollingFileAppender::new(Rotation::DAILY, directory, file_name_prefix)
+  RollingFileAppender::new(Rotation::DAILY, directory, file_name_prefix, share_type)
 }
 
 /// Creates a non-rolling file appender.
@@ -399,8 +415,12 @@ pub fn daily(
 /// ```
 ///
 /// This will result in a log file located at `/some/path/non-rolling.log`.
-pub fn never(directory: impl AsRef<Path>, file_name: impl AsRef<Path>) -> RollingFileAppender {
-  RollingFileAppender::new(Rotation::NEVER, directory, file_name)
+pub fn never(
+  directory: impl AsRef<Path>,
+  file_name: impl AsRef<Path>,
+  share_type: FileShare,
+) -> RollingFileAppender {
+  RollingFileAppender::new(Rotation::NEVER, directory, file_name, share_type)
 }
 
 /// Defines a fixed period for rolling of a log file.
@@ -527,6 +547,7 @@ impl Inner {
     log_filename_prefix: Option<String>,
     log_filename_suffix: Option<String>,
     max_files: Option<usize>,
+    share_type: FileShare,
   ) -> Result<(Self, RwLock<File>), builder::InitError> {
     let log_directory = directory.as_ref().to_path_buf();
     let date_format = rotation.date_format();
@@ -546,7 +567,11 @@ impl Inner {
       max_files,
     };
     let filename = inner.join_date(&now);
-    let writer = RwLock::new(create_writer(inner.log_directory.as_ref(), &filename)?);
+    let writer = RwLock::new(create_writer(
+      inner.log_directory.as_ref(),
+      &filename,
+      share_type,
+    )?);
     Ok((inner, writer))
   }
 
@@ -637,14 +662,14 @@ impl Inner {
     }
   }
 
-  fn refresh_writer(&self, now: OffsetDateTime, file: &mut File) {
+  fn refresh_writer(&self, now: OffsetDateTime, file: &mut File, share_type: FileShare) {
     let filename = self.join_date(&now);
 
     if let Some(max_files) = self.max_files {
       self.prune_old_logs(max_files);
     }
 
-    match create_writer(&self.log_directory, &filename) {
+    match create_writer(&self.log_directory, &filename, share_type) {
       Ok(new_file) => {
         if let Err(err) = file.flush() {
           eprintln!("Couldn't flush previous writer: {}", err);
@@ -690,12 +715,16 @@ impl Inner {
   }
 }
 
-fn create_writer(directory: &Path, filename: &str) -> Result<File, InitError> {
+fn create_writer(
+  directory: &Path,
+  filename: &str,
+  _share_type: FileShare,
+) -> Result<File, InitError> {
   let path = directory.join(filename);
   let mut open_options = OpenOptions::new();
   open_options.append(true).create(true);
   #[cfg(target_os = "windows")]
-  open_options.lock_share(e_utils::fs::FileShare::Read);
+  open_options.lock_share(_share_type);
 
   let new_file = open_options.open(path.as_path());
   if new_file.is_err() {
@@ -739,9 +768,9 @@ mod test {
     appender.flush().expect("Failed to flush!");
   }
 
-  fn test_appender(rotation: Rotation, file_prefix: &str) {
+  fn test_appender(rotation: Rotation, file_prefix: &str,share_type: FileShare) {
     let directory = tempfile::tempdir().expect("failed to create tempdir");
-    let mut appender = RollingFileAppender::new(rotation, directory.path(), file_prefix);
+    let mut appender = RollingFileAppender::new(rotation, directory.path(), file_prefix,share_type);
 
     let expected_value = "Hello";
     write_to_log(&mut appender, expected_value);
@@ -754,22 +783,22 @@ mod test {
 
   #[test]
   fn write_minutely_log() {
-    test_appender(Rotation::HOURLY, "minutely.log");
+    test_appender(Rotation::HOURLY, "minutely.log",FileShare::Read);
   }
 
   #[test]
   fn write_hourly_log() {
-    test_appender(Rotation::HOURLY, "hourly.log");
+    test_appender(Rotation::HOURLY, "hourly.log",FileShare::Read);
   }
 
   #[test]
   fn write_daily_log() {
-    test_appender(Rotation::DAILY, "daily.log");
+    test_appender(Rotation::DAILY, "daily.log",FileShare::Read);
   }
 
   #[test]
   fn write_never_log() {
-    test_appender(Rotation::NEVER, "never.log");
+    test_appender(Rotation::NEVER, "never.log",FileShare::Read);
   }
 
   #[test]
@@ -835,6 +864,7 @@ mod test {
         prefix.map(ToString::to_string),
         suffix.map(ToString::to_string),
         None,
+        FileShare::Read,
       )
       .unwrap();
       let path = inner.join_date(&now);
@@ -947,6 +977,7 @@ mod test {
       Some("test_make_writer".to_string()),
       None,
       None,
+      FileShare::Read,
     )
     .unwrap();
 
@@ -955,7 +986,12 @@ mod test {
       let clock = clock.clone();
       Box::new(move || *clock.lock().unwrap())
     };
-    let appender = RollingFileAppender { state, writer, now };
+    let appender = RollingFileAppender {
+      state,
+      writer,
+      now,
+      share_type: FileShare::Read,
+    };
     let default = tracing_subscriber::fmt()
       .without_time()
       .with_level(false)
@@ -1029,6 +1065,7 @@ mod test {
       Some("test_max_log_files".to_string()),
       None,
       Some(2),
+      FileShare::Read,
     )
     .unwrap();
 
@@ -1037,7 +1074,12 @@ mod test {
       let clock = clock.clone();
       Box::new(move || *clock.lock().unwrap())
     };
-    let appender = RollingFileAppender { state, writer, now };
+    let appender = RollingFileAppender {
+      state,
+      writer,
+      now,
+      share_type: FileShare::Read,
+    };
     let default = tracing_subscriber::fmt()
       .without_time()
       .with_level(false)
