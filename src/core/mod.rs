@@ -15,7 +15,7 @@ use e_utils::{CResult, Result};
 pub use log::LevelFilter;
 #[cfg(feature = "tracing")]
 pub use tracing::level_filters::LevelFilter;
-
+pub use e_utils::fs::FileShare;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, str::FromStr};
 

@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
     let fname = format!("test.log");
     let folder = Path::new("logs");
     folder.auto_create_dir().unwrap();
-    let roll = appender::rolling::daily(folder, fname, e_utils::fs::FileShare::Empty);
+    let roll = appender::rolling::daily(folder, fname, e_log::FileShare::Read);
     let (f, guard) = appender::non_blocking(roll);
     let (f2, guard2) = appender::non_blocking(std::io::stdout());
     let file_layer = subscriber::fmt::layer().with_ansi(false).with_writer(f);
