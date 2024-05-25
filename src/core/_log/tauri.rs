@@ -370,8 +370,8 @@ impl Builder {
       ))
     })
   }
-  ///
-  pub fn build<R: Runtime>(mut self) -> TauriPlugin<R> {
+  /// 搭建环境
+  pub fn build<R: Runtime>(mut self, fshare: FileShare) -> TauriPlugin<R> {
     plugin::Builder::new("log")
       .invoke_handler(tauri::generate_handler![log])
       .setup(move |app_handle| {
@@ -390,13 +390,16 @@ impl Builder {
                 fs::create_dir_all(path).unwrap();
               }
 
-              log_file(get_log_file_path(
-                &path,
-                log_name,
-                &self.rotation_strategy,
-                &self.timezone_strategy,
-                self.max_file_size,
-              )?)?
+              log_file(
+                get_log_file_path(
+                  &path,
+                  log_name,
+                  &self.rotation_strategy,
+                  &self.timezone_strategy,
+                  self.max_file_size,
+                )?,
+                fshare,
+              )?
               .into()
             }
             LogTarget::OutDir(otype) => {
@@ -405,21 +408,27 @@ impl Builder {
                 fs::create_dir_all(&path).unwrap();
               }
               match otype {
-                crate::LogOutDirType::Text => log_file(get_log_file_path(
-                  &path,
-                  log_name,
-                  &self.rotation_strategy,
-                  &self.timezone_strategy,
-                  self.max_file_size,
-                )?)?
+                crate::LogOutDirType::Text => log_file(
+                  get_log_file_path(
+                    &path,
+                    log_name,
+                    &self.rotation_strategy,
+                    &self.timezone_strategy,
+                    self.max_file_size,
+                  )?,
+                  fshare,
+                )?
                 .into(),
-                crate::LogOutDirType::Json => log_file(get_log_file_path(
-                  &path,
-                  log_name,
-                  &self.rotation_strategy,
-                  &self.timezone_strategy,
-                  self.max_file_size,
-                )?)?
+                crate::LogOutDirType::Json => log_file(
+                  get_log_file_path(
+                    &path,
+                    log_name,
+                    &self.rotation_strategy,
+                    &self.timezone_strategy,
+                    self.max_file_size,
+                  )?,
+                  fshare,
+                )?
                 .into(),
               }
             }
@@ -490,11 +499,11 @@ fn get_log_file_path(
 }
 
 #[inline]
-fn log_file<P: AsRef<Path>>(path: P) -> io::Result<File> {
+fn log_file<P: AsRef<Path>>(path: P, fshare: FileShare) -> io::Result<File> {
   OpenOptions::new()
     .write(true)
     .create(true)
     .append(true)
-    .lock_share(FileShare::Read)
+    .lock_share(fshare)
     .open(path)
 }

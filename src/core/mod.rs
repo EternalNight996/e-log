@@ -246,7 +246,7 @@ impl From<String> for Level {
 }
 
 /// An enum representing the available targets of the logger.
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum LogTarget {
   /// Print logs to stdout.
   Stdout,
@@ -311,7 +311,7 @@ impl LogTarget {
   }
 }
 /// 文本格式
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum LogOutDirType {
   /// 文本
   Text,
