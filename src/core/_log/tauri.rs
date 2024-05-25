@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 use crate::core::Level;
 use crate::LogTarget;
+use e_utils::fs::{FileOptionsExt, FileShare};
 use e_utils::parse::MyParseFormat;
 use e_utils::system::time::{TimezoneStrategy, LOG_DATE_FORMAT, LOG_FILE_DATE_FORMAT};
 use e_utils::Result;
@@ -15,6 +16,8 @@ use serde::Serialize;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::fs::OpenOptions;
+use std::io;
 use std::{
   fmt::Arguments,
   fs::{self, File},
@@ -387,7 +390,7 @@ impl Builder {
                 fs::create_dir_all(path).unwrap();
               }
 
-              fern::log_file(get_log_file_path(
+              log_file(get_log_file_path(
                 &path,
                 log_name,
                 &self.rotation_strategy,
@@ -402,7 +405,7 @@ impl Builder {
                 fs::create_dir_all(&path).unwrap();
               }
               match otype {
-                crate::LogOutDirType::Text => fern::log_file(get_log_file_path(
+                crate::LogOutDirType::Text => log_file(get_log_file_path(
                   &path,
                   log_name,
                   &self.rotation_strategy,
@@ -410,7 +413,7 @@ impl Builder {
                   self.max_file_size,
                 )?)?
                 .into(),
-                crate::LogOutDirType::Json => fern::log_file(get_log_file_path(
+                crate::LogOutDirType::Json => log_file(get_log_file_path(
                   &path,
                   log_name,
                   &self.rotation_strategy,
@@ -484,4 +487,14 @@ fn get_log_file_path(
   }
 
   Ok(path)
+}
+
+#[inline]
+fn log_file<P: AsRef<Path>>(path: P) -> io::Result<File> {
+  OpenOptions::new()
+    .write(true)
+    .create(true)
+    .append(true)
+    .lock_share(FileShare::Read)
+    .open(path)
 }
