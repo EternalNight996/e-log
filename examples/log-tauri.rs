@@ -1,11 +1,13 @@
 #![allow(unused)]
 #[cfg(feature = "log-tauri")]
 fn main() {
-  use e_log::logger::{init_layer_log,TauriBuilder};
+  use e_log::logger::{init_layer_log, TauriBuilder};
   use e_log::Level;
   use e_log::LogTarget;
   use e_utils::parse::AutoPath as _;
   use e_utils::parse::MyParseFormat as _;
+  use e_log::preload::*;
+
   #[inline]
   fn init_layer(
     folder: &str,
@@ -35,6 +37,11 @@ fn main() {
     )?;
     Ok(log)
   }
+  info!(target:"test","info");
+  debug!("debug");
+  error!("error");
+  trace!("trace");
+  warn!("warn");
   //   let logger = init_layer(
   //     &"{cwd}\\logs".parse_path(),
   //     Some("test.log".into()),

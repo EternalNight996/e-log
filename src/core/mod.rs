@@ -20,64 +20,69 @@ use std::{borrow::Cow, path::PathBuf, str::FromStr};
 pub use tracing::level_filters::LevelFilter;
 
 /// 针对结果的解析打印
-pub trait AutoLevelRes<T, S: Serialize> {
+pub trait AutoLevelRes<T, S: AsRef<str>> {
   /// 自动
-  fn print(self, add: &str, tag: S) -> Self;
+  fn print(self, add: &str, target: S) -> Self;
   /// 带错误
-  fn eprint(self, add: &str, tag: S) -> Self;
+  fn eprint(self, add: &str, target: S) -> Self;
 }
 
 /// 便捷打印
-pub trait AutoLevel<A: Serialize> {
+pub trait AutoLevel<A: AsRef<str>> {
   /// 自动判断类型， 如LevelData 和AsRef<str> 默认标签LevelTag::Unknow
-  fn print(&self, tag: A, level: Level) -> bool;
+  fn print(&self, target: A, level: Level) -> bool;
 }
 
-impl<S: AsRef<str>, A: Serialize> AutoLevel<A> for S {
-  fn print(&self, tag: A, level: Level) -> bool {
+impl<S: AsRef<str>, A: AsRef<str>> AutoLevel<A> for S {
+  fn print(&self, target: A, level: Level) -> bool {
     let data = self.as_ref();
+    let target = target.as_ref();
     match level {
-      Level::Trace => trace!(tag:tag, data),
-      Level::Debug => debug!(tag:tag, data),
-      Level::Info => info!(tag:tag, data),
-      Level::Warn => warn!(tag:tag, data),
-      Level::Error => error!(tag:tag, data),
+      Level::Trace => trace!(target:target, data),
+      Level::Debug => debug!(target:target, data),
+      Level::Info => info!(target:target, data),
+      Level::Warn => warn!(target:target, data),
+      Level::Error => error!(target:target, data),
       Level::Off => return false,
     };
     true
   }
 }
-impl<T, S: Serialize> AutoLevelRes<T, S> for CResult<T> {
-  fn print(self, add: &str, tag: S) -> Self {
+impl<T, S: AsRef<str>> AutoLevelRes<T, S> for CResult<T> {
+  fn print(self, add: &str, target: S) -> Self {
+    let target = target.as_ref();
     match &self {
-      CResult::Ok(_x) => info!(tag:tag, add),
-      CResult::Err(x) => warn!(tag:tag, "{}: {}", add, x),
+      CResult::Ok(_x) => info!(target:target, add),
+      CResult::Err(x) => warn!(target:target, "{}: {}", add, x),
     };
     self
   }
 
-  fn eprint(self, add: &str, tag: S) -> Self {
+  fn eprint(self, add: &str, target: S) -> Self {
+    let target = target.as_ref();
     match &self {
-      CResult::Ok(_x) => info!(tag:tag, add),
-      CResult::Err(x) => error!(tag:tag, "{}: {}", add, x,),
+      CResult::Ok(_x) => info!(target:target, add),
+      CResult::Err(x) => error!(target:target, "{}: {}", add, x,),
     };
     self
   }
 }
 
-impl<T, S: Serialize> AutoLevelRes<T, S> for Result<T> {
-  fn print(self, add: &str, tag: S) -> Self {
+impl<T, S: AsRef<str>> AutoLevelRes<T, S> for Result<T> {
+  fn print(self, add: &str, target: S) -> Self {
+    let target = target.as_ref();
     match &self {
-      Ok(_x) => info!(tag:tag, add),
-      Err(x) => warn!(tag:tag, "{}: {}", add, x,),
+      Ok(_x) => info!(target:target, add),
+      Err(x) => warn!(target:target, "{}: {}", add, x,),
     };
     self
   }
 
-  fn eprint(self, add: &str, tag: S) -> Self {
+  fn eprint(self, add: &str, target: S) -> Self {
+    let target = target.as_ref();
     match &self {
-      Ok(_x) => info!(tag:tag, add),
-      Err(x) => error!(tag:tag, "{}: {}", add, x,),
+      Ok(_x) => info!(target:target, add),
+      Err(x) => error!(target:target, "{}: {}", add, x,),
     };
     self
   }
@@ -134,7 +139,7 @@ pub struct LevelData<T: Serialize, S: Serialize> {
   /// 主体
   pub msg: T,
   /// 标签
-  pub tag: S,
+  pub target: S,
 }
 impl<T: Serialize, S: Serialize> LevelData<T, S> {
   /// 序列化
@@ -144,18 +149,20 @@ impl<T: Serialize, S: Serialize> LevelData<T, S> {
 }
 impl Level {
   /// 写入日志
-  pub fn add<T, S>(&self, msg: T, tag: S) -> bool
+  pub fn add<T, S>(&self, msg: T, target: S) -> bool
   where
-    T: Serialize,
-    S: Serialize,
+    T: AsRef<str>,
+    S: AsRef<str>,
   {
+    let target = target.as_ref();
+    let msg = msg.as_ref();
     match self {
       Level::Off => return false,
-      Level::Error => error!(tag:tag,msg),
-      Level::Warn => warn!(tag:tag,msg),
-      Level::Info => info!(tag:tag,msg),
-      Level::Debug => debug!(tag:tag,msg),
-      Level::Trace => trace!(tag:tag,msg),
+      Level::Error => error!(target:target,msg),
+      Level::Warn => warn!(target:target,msg),
+      Level::Info => info!(target:target,msg),
+      Level::Debug => debug!(target:target,msg),
+      Level::Trace => trace!(target:target,msg),
     }
     true
   }
