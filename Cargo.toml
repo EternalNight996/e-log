@@ -28,6 +28,9 @@ log-tauri = [
   "serde_repr",
   "tauri",
 ]
+log-tauri2 = [
+  
+]
 tauri-colored = ["fern/colored"]
 default = []
 
@@ -92,7 +95,7 @@ path = "examples/log-actix.rs"
 
 [package]
 name = "e-log"
-version = "0.2.0-alpha.7"
+version = "0.1.9"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

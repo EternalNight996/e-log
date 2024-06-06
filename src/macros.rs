@@ -61,124 +61,55 @@ macro_rules! cfg_must {
       )*
   }
 }
+
 #[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! info {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Info, "{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Info, "{}",$msg)
+    $crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target),$crate::core::_log::__private::StdLevel::Info, "{}",$msg)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_log::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Info, "{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Info, $($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target), $crate::core::_log::__private::StdLevel::Info, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Info, $($arg)+))
 }
 #[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! warn {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Warn, "{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
+    $crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target),$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_log::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Warn, "{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Warn, $($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target), $crate::core::_log::__private::StdLevel::Warn, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Warn, $($arg)+))
 }
 #[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! error {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, "{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
+    $crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target),$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_log::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, "{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Error, $($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target), $crate::core::_log::__private::StdLevel::Error, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, $($arg)+))
 }
 #[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! debug {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, "{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Debug, "{}",$msg)
+    $crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target),$crate::core::_log::__private::StdLevel::Debug, "{}",$msg)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_log::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, "{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Debug, $($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: &$crate::core::ser_to_str($target), $crate::core::_log::__private::StdLevel::Debug, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, $($arg)+))
 }
 #[cfg(feature = "log")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! trace {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Trace, "{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Trace, "{}",$msg)
+    $crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target),$crate::core::_log::__private::StdLevel::Trace, "{}",$msg)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_log::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Trace, "{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ({$crate::core::_log::__private::slog!(target: $target, $crate::core::_log::__private::StdLevel::Trace, $($arg)+)});
+  (target: $target:expr, $($arg:tt)+) => ({$crate::core::_log::__private::slog!(target:&$crate::core::ser_to_str($target), $crate::core::_log::__private::StdLevel::Trace, $($arg)+)});
   ($($arg:tt)+) => ({$crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Trace, $($arg)+)})
 }
 
@@ -186,119 +117,49 @@ macro_rules! trace {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! info {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::info!("{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_tracing::__private::info!(target:$target,"{}",data)
+    $crate::core::_tracing::__private::info!(target:&$crate::core::ser_to_str($target),"{}",data)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_tracing::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::info!("{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::info!(target:$target,$($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::info!(target:&$crate::core::ser_to_str($target),$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::info!($($arg)+))
 }
 #[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! warn {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::warn!("{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_tracing::__private::warn!(target:$target,"{}",data)
+    $crate::core::_tracing::__private::warn!(target:&$crate::core::ser_to_str($target),"{}",data)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_tracing::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::warn!("{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::warn!(target:$target,$($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::warn!(target:&$crate::core::ser_to_str($target),$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::warn!($($arg)+))
 }
 #[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! error {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::error!("{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_tracing::__private::error!(target:$target,"{}",data)
+    $crate::core::_tracing::__private::error!(target:&$crate::core::ser_to_str($target),"{}",data)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_tracing::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::error!("{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::error!(target:$target,$($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::error!(target:&$crate::core::ser_to_str($target),$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::error!($($arg)+))
 }
 #[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! debug {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::debug!("{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_tracing::__private::debug!(target:$target,"{}",data)
+    $crate::core::_tracing::__private::debug!(target:&$crate::core::ser_to_str($target),"{}",data)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_tracing::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::debug!("{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::debug!(target:$target,$($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::debug!(target:&$crate::core::ser_to_str($target),$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::debug!($($arg)+))
 }
 #[cfg(feature = "tracing")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! trace {
-  (tag: $tag:expr, $msg:expr) => ({
-    let data = $crate::LevelData {
-      msg: $msg,
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::trace!("{}",data)
-  });
   (target: $target:expr, $msg:expr) => ({
-    $crate::core::_tracing::__private::trace!(target:$target,"{}",data)
+    $crate::core::_tracing::__private::trace!(target:&$crate::core::ser_to_str($target),"{}",data)
   });
-  (tag: $tag:expr, $($arg:tt)+) => ({
-    let data = $crate::LevelData {
-      msg: $crate::core::_tracing::__private::format_args!($($arg)+),
-      tag: $tag,
-    }.to_string();
-    $crate::core::_tracing::__private::trace!("{}",data)
-  });
-  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::trace!(target:$target,$($arg)+));
+  (target: $target:expr, $($arg:tt)+) => ($crate::core::_tracing::__private::trace!(target:&$crate::core::ser_to_str($target),$($arg)+));
   ($($arg:tt)+) => ($crate::core::_tracing::__private::trace!($($arg)+))
 }

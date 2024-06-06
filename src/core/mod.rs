@@ -325,3 +325,9 @@ pub enum LogOutDirType {
   /// Json
   Json,
 }
+
+
+/// ser to str
+pub fn ser_to_str<T: Serialize + ?Sized>(s: &T) -> String{
+  serde_json::to_string(s).unwrap_or("Unknow".to_string())
+}
