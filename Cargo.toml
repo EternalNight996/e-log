@@ -95,7 +95,7 @@ path = "examples/log-actix.rs"
 
 [package]
 name = "e-log"
-version = "0.1.9"
+version = "0.1.91"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
