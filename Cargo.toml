@@ -28,9 +28,6 @@ log-tauri = [
   "serde_repr",
   "tauri",
 ]
-log-tauri2 = [
-  
-]
 tauri-colored = ["fern/colored"]
 default = []
 
@@ -69,7 +66,7 @@ e-log = { path = "./", features = [
   # "tracing-appender",
   # "tracing-subscriber",
   # "parking_lot",
-  "log-tauri",
+  # "log-tauri",
   # "log-actix",
 ] }
 tauri = { version = "1.6" }
