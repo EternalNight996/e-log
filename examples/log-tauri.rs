@@ -42,6 +42,7 @@ fn main() {
   error!("error");
   trace!("trace");
   warn!("warn");
+  println!("OK");
   //   let logger = init_layer(
   //     &"{cwd}\\logs".parse_path(),
   //     Some("test.log".into()),
