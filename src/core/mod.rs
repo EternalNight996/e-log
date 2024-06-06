@@ -20,23 +20,22 @@ use std::{borrow::Cow, path::PathBuf, str::FromStr};
 pub use tracing::level_filters::LevelFilter;
 
 /// 针对结果的解析打印
-pub trait AutoLevelRes<T, S: AsRef<str>> {
+pub trait AutoLevelRes<T> {
   /// 自动
-  fn print(self, add: &str, target: S) -> Self;
+  fn print(self, add: &str, target: &str) -> Self;
   /// 带错误
-  fn eprint(self, add: &str, target: S) -> Self;
+  fn eprint(self, add: &str, target: &str) -> Self;
 }
 
 /// 便捷打印
-pub trait AutoLevel<A: AsRef<str>> {
+pub trait AutoLevel {
   /// 自动判断类型， 如LevelData 和AsRef<str> 默认标签LevelTag::Unknow
-  fn print(&self, target: A, level: Level) -> bool;
+  fn print(&self, target: &str, level: Level) -> bool;
 }
 
-impl<S: AsRef<str>, A: AsRef<str>> AutoLevel<A> for S {
-  fn print(&self, target: A, level: Level) -> bool {
+impl<S: AsRef<str>> AutoLevel for S {
+  fn print(&self, target: &str, level: Level) -> bool {
     let data = self.as_ref();
-    let target = target.as_ref();
     match level {
       Level::Trace => trace!(target:target, data),
       Level::Debug => debug!(target:target, data),
@@ -48,9 +47,8 @@ impl<S: AsRef<str>, A: AsRef<str>> AutoLevel<A> for S {
     true
   }
 }
-impl<T, S: AsRef<str>> AutoLevelRes<T, S> for CResult<T> {
-  fn print(self, add: &str, target: S) -> Self {
-    let target = target.as_ref();
+impl<T> AutoLevelRes<T> for CResult<T> {
+  fn print(self, add: &str, target: &str) -> Self {
     match &self {
       CResult::Ok(_x) => info!(target:target, add),
       CResult::Err(x) => warn!(target:target, "{}: {}", add, x),
@@ -58,8 +56,7 @@ impl<T, S: AsRef<str>> AutoLevelRes<T, S> for CResult<T> {
     self
   }
 
-  fn eprint(self, add: &str, target: S) -> Self {
-    let target = target.as_ref();
+  fn eprint(self, add: &str, target: &str) -> Self {
     match &self {
       CResult::Ok(_x) => info!(target:target, add),
       CResult::Err(x) => error!(target:target, "{}: {}", add, x,),
@@ -68,9 +65,8 @@ impl<T, S: AsRef<str>> AutoLevelRes<T, S> for CResult<T> {
   }
 }
 
-impl<T, S: AsRef<str>> AutoLevelRes<T, S> for Result<T> {
-  fn print(self, add: &str, target: S) -> Self {
-    let target = target.as_ref();
+impl<T> AutoLevelRes<T> for Result<T> {
+  fn print(self, add: &str, target: &str) -> Self {
     match &self {
       Ok(_x) => info!(target:target, add),
       Err(x) => warn!(target:target, "{}: {}", add, x,),
@@ -78,8 +74,7 @@ impl<T, S: AsRef<str>> AutoLevelRes<T, S> for Result<T> {
     self
   }
 
-  fn eprint(self, add: &str, target: S) -> Self {
-    let target = target.as_ref();
+  fn eprint(self, add: &str, target: &str) -> Self {
     match &self {
       Ok(_x) => info!(target:target, add),
       Err(x) => error!(target:target, "{}: {}", add, x,),

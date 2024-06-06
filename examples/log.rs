@@ -4,7 +4,7 @@ fn main() {
 
   use e_log::preload::*;
   use e_utils::fs::{FileExt as _, FileOptionsExt};
-  info!("info");
+  info!(target: "test","info");
   debug!("debug");
   error!("error");
   trace!("trace");
