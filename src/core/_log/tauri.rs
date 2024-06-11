@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 use crate::core::Level;
 use crate::LogTarget;
-use e_utils::fs::options::{FileOptionsExt, FileShare};
+use e_utils::fs::{FileOptionsExt as _, FileShare};
 use e_utils::parse::MyParseFormat;
 use e_utils::system::time::{TimezoneStrategy, LOG_DATE_FORMAT, LOG_FILE_DATE_FORMAT};
 use e_utils::Result;
