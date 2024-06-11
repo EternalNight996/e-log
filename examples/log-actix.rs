@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
   use e_log::{preload::*, Level};
 
   async fn hello() -> &'static str {
-    info!("hello");
+    info!(target:"test","hello");
     warn!("hello");
     debug!("hello");
     error!("hello");

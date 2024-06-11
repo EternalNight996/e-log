@@ -2,7 +2,6 @@
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
   use std::path::Path;
-
   use actix_web::{web, App, HttpServer};
   use e_log::appender;
   use e_log::appender::non_blocking::WorkerGuard;
@@ -15,8 +14,9 @@ async fn main() -> std::io::Result<()> {
   use e_utils::parse::AutoPath as _;
 
   async fn hello() -> &'static str {
-    info!("hello");
-    warn!("hello");
+    info!(target:"TEST","hello");
+    info!(target:"TEST","hello");
+    warn!(target:"x","hello");
     debug!("hello");
     error!("hello");
     trace!("hello");
