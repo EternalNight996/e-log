@@ -1,3 +1,4 @@
+
 #[cfg(feature = "tracing-actix")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -10,7 +11,7 @@ async fn main() -> std::io::Result<()> {
     subscriber::{self, layer::SubscriberExt as _, Registry},
     web::TracingLogger,
   };
-  use e_log::{preload::*, Level, __private::subscriber::Subscriber};
+  use e_log::{trace,info,warn,debug,error, Level, __private::subscriber::Subscriber};
   use e_utils::parse::AutoPath as _;
 
   async fn hello() -> &'static str {

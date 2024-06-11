@@ -6,10 +6,16 @@
 ### Support app
 <table style="background:#000">
   <tr>
-    <th><h3 style="color:#fff">APP</h3></th>
+    <th><h3 style="color:#fff">功能</h3></th>
     <th><h3 style="color:#fff">Windows 10</h3></th>
     <th><h3 style="color:#fff">Unix</h3></th>
     <th><h3 style="color:#fff">Macos</h3></th>
+  </tr>
+   <tr>
+    <td>actix</td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
   </tr>
   <tr>
     <td>tauri</td>
@@ -26,10 +32,11 @@
   </tr>
   <tr>
     <td>tracing</td>
-    <td><h4 style="color:red">x</h4></td>
-    <td><h4 style="color:red">x</h4></td>
-    <td><h4 style="color:red">x</h4></td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
   </tr>
+  <tr>
   <tr>
     <td>_</td>
     <td><h4 style="color:red">×</h4></td>
@@ -37,25 +44,32 @@
     <td><h4 style="color:red">×</h4></td>
   </tr>
 </table>
-
 # ✨ Features
 ```toml
 [features]
-std = ["log"]
-# trace = ["tracing"]
-# trace-subscriber = ["tracing-subscriber"]
-# trace-appender = ["tracing-appender"]
-log-tauri = [
-  "std",
+log-actix = ["env_logger", "log"]
+tracing-actix = [
+  "tracing-actix-web",
+  "tracing",
+  "tracing-log",
+]
+tracing-appender = [
+  "tracing-subscriber/fmt",
+  "tracing-subscriber/std",
+  "tracing-subscriber",
+  "thiserror",
+  "crossbeam-channel",
   "time",
+]
+log-tauri = [
+  "log",
   "log/kv_unstable",
   "fern",
   "byte-unit",
   "serde_repr",
   "tauri",
 ]
-tauri-colored = ["fern/colored"]
-default = ["std"]
+default = []
 ```
 
 # 📖 Example

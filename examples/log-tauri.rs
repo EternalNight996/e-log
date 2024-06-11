@@ -1,4 +1,6 @@
 #![allow(unused)]
+#[macro_use]
+extern crate e_log;
 #[cfg(feature = "log-tauri")]
 fn main() {
   use e_log::logger::{init_layer_log, TauriBuilder};

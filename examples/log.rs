@@ -1,8 +1,9 @@
+#[macro_use]
+extern crate e_log;
+
 #[cfg(feature = "log")]
 fn main() {
   use std::{fs::OpenOptions, io::Write as _, time::Duration};
-
-  use e_log::preload::*;
   use e_utils::fs::{FileExt as _, FileOptionsExt};
   info!(target: "test","info");
   debug!("debug");

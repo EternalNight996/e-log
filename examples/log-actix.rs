@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate e_log;
 /// # Format
 /// Variable | Description
 /// -------- | -----------
@@ -29,7 +31,7 @@ async fn main() -> std::io::Result<()> {
   use actix_web::middleware::Logger;
   use actix_web::{web, App, HttpServer};
   use e_log::logger::init_log_layer;
-  use e_log::{preload::*, Level};
+  use e_log::Level;
 
   async fn hello() -> &'static str {
     info!(target:"test","hello");
