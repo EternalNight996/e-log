@@ -71,6 +71,7 @@ log-tauri = [
   "tauri",
 ]
 default = []
+
 ```
 
 # 📖 Example
