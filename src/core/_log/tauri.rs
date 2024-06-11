@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 use crate::core::Level;
 use crate::LogTarget;
-use e_utils::fs::{FileOptionsExt, FileShare};
+use e_utils::fs::options::{FileOptionsExt, FileShare};
 use e_utils::parse::MyParseFormat;
 use e_utils::system::time::{TimezoneStrategy, LOG_DATE_FORMAT, LOG_FILE_DATE_FORMAT};
 use e_utils::Result;
@@ -352,24 +352,23 @@ impl Builder {
     self.log_name = Some(log_name.into());
     self
   }
-  ///
-  #[cfg(feature = "tauri-colored")]
-  pub fn with_colors(self, colors: fern::colors::ColoredLevelConfig) -> Self {
-    let format =
-      time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
-        .unwrap();
+  // #[cfg(feature = "tauri-colored")]
+  // pub fn with_colors(self, colors: fern::colors::ColoredLevelConfig) -> Self {
+  //   let format =
+  //     time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
+  //       .unwrap();
 
-    let timezone_strategy = self.timezone_strategy.clone();
-    self.format(move |out, message, record| {
-      out.finish(format_args!(
-        "{}[{}][{}] {}",
-        timezone_strategy.get_now().format(&format).unwrap(),
-        colors.color(record.level()),
-        record.target(),
-        message
-      ))
-    })
-  }
+  //   let timezone_strategy = self.timezone_strategy.clone();
+  //   self.format(move |out, message, record| {
+  //     out.finish(format_args!(
+  //       "{}[{}][{}] {}",
+  //       timezone_strategy.get_now().format(&format).unwrap(),
+  //       colors.color(record.level()),
+  //       record.target(),
+  //       message
+  //     ))
+  //   })
+  // }
   /// 搭建环境
   pub fn build<R: Runtime>(mut self, fshare: FileShare) -> TauriPlugin<R> {
     plugin::Builder::new("log")

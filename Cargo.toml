@@ -63,7 +63,7 @@ e-log = { path = "./", features = [
   # "tracing-subscriber",
   # "parking_lot",
   # "log-tauri",
-  "log-actix",
+  # "log-actix",
 ] }
 tauri = { version = "1.6" }
 tokio = { version = "1" }
@@ -88,7 +88,7 @@ path = "examples/log-actix.rs"
 
 [package]
 name = "e-log"
-version = "0.1.93"
+version = "0.1.94"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
