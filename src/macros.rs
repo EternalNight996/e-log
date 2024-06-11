@@ -56,10 +56,12 @@ macro_rules! cfg_tracing_appender {
 macro_rules! cfg_must {
   ($($item:item)*) => {
       $(
-        #[cfg(any(feature="log", feature="tracing"))]
+          #[cfg(all(feature="log", not(feature="tracing")))]
+          $item
+          #[cfg(all(feature="tracing", not(feature="log")))]
           $item
       )*
-  }
+  };
 }
 
 #[cfg(feature = "log")]
