@@ -64,7 +64,8 @@ e-log = { path = "./", features = [
   # "parking_lot",
   # "log-tauri",
   # "log-actix",
-  "tracing"
+  # "log"
+  # "tracing"
 ] }
 tauri = { version = "1.6" }
 tokio = { version = "1" }

@@ -1,25 +1,21 @@
-pub mod _log;
-
 cfg_tracing! {
   /// trace
   pub mod _tracing;
   #[allow(unused_imports)]
   pub use _tracing::*;
+  pub use tracing::level_filters::LevelFilter;
 }
 cfg_log! {
   /// Std
   pub mod _log;
   #[allow(unused_imports)]
   pub use _log::*;
+  pub use log::LevelFilter;
 }
 pub use e_utils::fs::FileShare;
 use e_utils::{CResult, Result};
-#[cfg(feature = "log")]
-pub use log::LevelFilter;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, path::PathBuf, str::FromStr};
-#[cfg(feature = "tracing")]
-pub use tracing::level_filters::LevelFilter;
 
 /// 针对结果的解析打印
 pub trait AutoLevelRes<T> {
@@ -323,8 +319,7 @@ pub enum LogOutDirType {
   Json,
 }
 
-
 /// ser to str
-pub fn ser_to_str<T: Serialize + ?Sized>(s: &T) -> String{
+pub fn ser_to_str<T: Serialize + ?Sized>(s: &T) -> String {
   serde_json::to_string(s).unwrap_or("Unknow".to_string())
 }
