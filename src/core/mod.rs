@@ -1,3 +1,5 @@
+pub mod _log;
+
 cfg_tracing! {
   /// trace
   pub mod _tracing;

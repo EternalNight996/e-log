@@ -25,7 +25,7 @@ log-tauri = [
   "serde_repr",
   "tauri",
 ]
-default = ["log"]
+default = []
 
 [dependencies]
 serde_json = "1.0"
@@ -64,6 +64,7 @@ e-log = { path = "./", features = [
   # "parking_lot",
   # "log-tauri",
   # "log-actix",
+  "tracing"
 ] }
 tauri = { version = "1.6" }
 tokio = { version = "1" }
@@ -88,7 +89,7 @@ path = "examples/log-actix.rs"
 
 [package]
 name = "e-log"
-version = "0.1.97"
+version = "0.1.98"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
