@@ -3,12 +3,19 @@ crate-type = ["rlib"]
 proc-macro = false
 
 [features]
-log-actix = ["env_logger", "log"]
-tracing-actix = [
-  "tracing-actix-web",
-  "tracing",
-  "tracing-log",
+backtrace = []
+built = []
+panic = [
+  "backtrace",
+  "tokio",
+  "parking_lot",
+  "once_cell",
+  "e-utils/dialog",
+  "windows-sys/Win32_System_Console",
+  "windows-sys/Win32_Foundation",
 ]
+log-actix = ["env_logger", "log"]
+tracing-actix = ["tracing-actix-web", "tracing", "tracing-log"]
 tracing-appender = [
   "tracing-subscriber/fmt",
   "tracing-subscriber/std",
@@ -26,6 +33,9 @@ log-tauri = [
   "tauri",
 ]
 default = []
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.52", features = [] }
 
 [dependencies]
 serde_json = "1.0"
@@ -53,6 +63,8 @@ time = { version = "0.3", features = [
   "formatting",
   "parsing",
 ], default-features = false, optional = true }
+tokio = { version = "1", optional = true }
+once_cell = { version = "1", optional = true }
 
 # If you copy one of the examples into a new project, you should be using
 # [dependencies] instead, and delete the **path**.
@@ -61,9 +73,9 @@ e-log = { path = "./", features = [
   # "tracing-actix",
   # "tracing-appender",
   # "tracing-subscriber",
-  # "parking_lot",
   # "log-tauri",
-  "log-actix",
+  "panic",
+  "log",
   # "log"
   # "tracing"
 ] }
@@ -74,7 +86,7 @@ tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }
 
 
-[[example]] 
+[[example]]
 name = "tracing"
 path = "examples/tracing.rs"
 [[example]]
@@ -86,11 +98,14 @@ path = "examples/tracing-actix.rs"
 [[example]]
 name = "log-actix"
 path = "examples/log-actix.rs"
+[[example]]
+name = "log-panic"
+path = "examples/log-panic.rs"
 
 
 [package]
 name = "e-log"
-version = "0.1.993"
+version = "0.2.0-beta.1"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

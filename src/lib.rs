@@ -21,7 +21,7 @@
 #![cfg_attr(docsrs, allow(unused_attributes))]
 // #![cfg_attr(loom, allow(dead_code, unreachable_pub))]
 
-/// 宏
+/// Macros
 #[path = "./macros.rs"]
 #[macro_use]
 mod macros;
@@ -34,3 +34,6 @@ cfg_must! {
   #[path = "./preload.rs"]
   pub mod preload;
 }
+
+/// 扩展工具
+pub mod utils;

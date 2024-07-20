@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate e_log;
 /// # Format
 /// Variable | Description
