@@ -4,6 +4,7 @@ cfg_tracing! {
   #[allow(unused_imports)]
   pub use _tracing::*;
   pub use tracing::level_filters::LevelFilter;
+  pub use tracing::{error,debug,warn,info,trace};
 }
 cfg_log! {
   /// Std
@@ -11,12 +12,12 @@ cfg_log! {
   #[allow(unused_imports)]
   pub use _log::*;
   pub use log::LevelFilter;
+  pub use log::{error,debug,warn,info,trace};
 }
 pub use e_utils::fs::FileShare;
 use e_utils::{CResult, Result};
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, path::PathBuf, str::FromStr};
-
 /// 针对结果的解析打印
 pub trait AutoLevelRes<T> {
   /// 自动
@@ -35,11 +36,11 @@ impl<S: AsRef<str>> AutoLevel for S {
   fn print(&self, target: &str, level: Level) -> bool {
     let data = self.as_ref();
     match level {
-      Level::Trace => trace!(target:target, data),
-      Level::Debug => debug!(target:target, data),
-      Level::Info => info!(target:target, data),
-      Level::Warn => warn!(target:target, data),
-      Level::Error => error!(target:target, data),
+      Level::Trace => trace2!(target:target, data),
+      Level::Debug => debug2!(target:target, data),
+      Level::Info => info2!(target:target, data),
+      Level::Warn => warn2!(target:target, data),
+      Level::Error => error2!(target:target, data),
       Level::Off => return false,
     };
     true
@@ -48,16 +49,16 @@ impl<S: AsRef<str>> AutoLevel for S {
 impl<T> AutoLevelRes<T> for CResult<T> {
   fn print(self, add: &str, target: &str) -> Self {
     match &self {
-      CResult::Ok(_x) => info!(target:target, add),
-      CResult::Err(x) => warn!(target:target, "{}: {}", add, x),
+      CResult::Ok(_x) => info2!(target:target, add),
+      CResult::Err(x) => warn2!(target:target, "{}: {}", add, x),
     };
     self
   }
 
   fn eprint(self, add: &str, target: &str) -> Self {
     match &self {
-      CResult::Ok(_x) => info!(target:target, add),
-      CResult::Err(x) => error!(target:target, "{}: {}", add, x,),
+      CResult::Ok(_x) => info2!(target:target, add),
+      CResult::Err(x) => error2!(target:target, "{}: {}", add, x,),
     };
     self
   }
@@ -66,16 +67,16 @@ impl<T> AutoLevelRes<T> for CResult<T> {
 impl<T> AutoLevelRes<T> for Result<T> {
   fn print(self, add: &str, target: &str) -> Self {
     match &self {
-      Ok(_x) => info!(target:target, add),
-      Err(x) => warn!(target:target, "{}: {}", add, x,),
+      Ok(_x) => info2!(target:target, add),
+      Err(x) => warn2!(target:target, "{}: {}", add, x,),
     };
     self
   }
 
   fn eprint(self, add: &str, target: &str) -> Self {
     match &self {
-      Ok(_x) => info!(target:target, add),
-      Err(x) => error!(target:target, "{}: {}", add, x,),
+      Ok(_x) => info2!(target:target, add),
+      Err(x) => error2!(target:target, "{}: {}", add, x,),
     };
     self
   }
@@ -151,11 +152,11 @@ impl Level {
     let msg = msg.as_ref();
     match self {
       Level::Off => return false,
-      Level::Error => error!(target:target,msg),
-      Level::Warn => warn!(target:target,msg),
-      Level::Info => info!(target:target,msg),
-      Level::Debug => debug!(target:target,msg),
-      Level::Trace => trace!(target:target,msg),
+      Level::Error => error2!(target:target,msg),
+      Level::Warn => warn2!(target:target,msg),
+      Level::Info => info2!(target:target,msg),
+      Level::Debug => debug2!(target:target,msg),
+      Level::Trace => trace2!(target:target,msg),
     }
     true
   }

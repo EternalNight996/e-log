@@ -1,2 +1,2 @@
-pub use super::{debug, error, info, trace, warn};
+pub use super::{debug, debug2, error, error2, info, info2, trace, trace2, warn, warn2};
 pub use super::{AutoLevelRes, Level, LevelData, LevelFilter, LevelTag, LogTarget};

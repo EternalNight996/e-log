@@ -67,7 +67,7 @@ macro_rules! cfg_must {
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! info {
+macro_rules! info2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Info, "{}",$msg)
   });
@@ -77,7 +77,7 @@ macro_rules! info {
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! warn {
+macro_rules! warn2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
   });
@@ -87,7 +87,7 @@ macro_rules! warn {
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! error {
+macro_rules! error2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
   });
@@ -97,7 +97,7 @@ macro_rules! error {
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! debug {
+macro_rules! debug2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Debug, "{}",$msg)
   });
@@ -107,7 +107,7 @@ macro_rules! debug {
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! trace {
+macro_rules! trace2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Trace, "{}",$msg)
   });
@@ -118,7 +118,7 @@ macro_rules! trace {
 #[cfg(all(feature="tracing", not(feature="log")))]
 #[macro_export]
 #[doc(hidden)]
-macro_rules! info {
+macro_rules! info2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_tracing::__private::info!(target=$target,"{}",$msg)
   });
@@ -128,7 +128,7 @@ macro_rules! info {
 #[cfg(all(feature="tracing", not(feature="log")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! warn {
+macro_rules! warn2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_tracing::__private::warn!(target=$target,"{}",$msg)
   });
@@ -138,7 +138,7 @@ macro_rules! warn {
 #[cfg(all(feature="tracing", not(feature="log")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! error {
+macro_rules! error2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_tracing::__private::error!(target=$target,"{}",$msg)
   });
@@ -148,7 +148,7 @@ macro_rules! error {
 #[cfg(all(feature="tracing", not(feature="log")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! debug {
+macro_rules! debug2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_tracing::__private::debug!(target=$target,"{}",$msg)
   });
@@ -158,7 +158,7 @@ macro_rules! debug {
 #[cfg(all(feature="tracing", not(feature="log")))]
 #[doc(hidden)]
 #[macro_export]
-macro_rules! trace {
+macro_rules! trace2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_tracing::__private::trace!(target=$target,"{}",$msg)
   });
