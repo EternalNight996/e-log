@@ -57,6 +57,7 @@ macro_rules! cfg_panic {
     ($($item:item)*) => {
         $(
             #[cfg(feature = "panic")]
+            #[cfg(all(feature = "panic", any(feature = "log", feature = "tracing")))]
             $item
         )*
     }

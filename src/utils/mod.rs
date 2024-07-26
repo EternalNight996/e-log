@@ -18,3 +18,8 @@ pub fn reattach_windows_terminal() {
         let _ = unsafe { AttachConsole(ATTACH_PARENT_PROCESS) };
     }
 }
+
+// 如果panic特性被启用，但log和tracing都没有被启用，则编译错误
+#[cfg(feature = "panic")]
+#[cfg(not(any(feature = "log", feature = "tracing")))]
+compile_error!("Feature 'panic' requires either 'log' or 'tracing' to be enabled.");
