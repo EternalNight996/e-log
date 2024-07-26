@@ -1,5 +1,5 @@
 //! Keep track of modules that might have caused the program to panic
-
+#![cfg(any(feature = "log", feature = "tracing"))]
 use crate::info;
 use e_utils::once_cell::sync::Lazy;
 use parking_lot::RwLock;

@@ -1,3 +1,5 @@
+#![cfg(any(feature = "log", feature = "tracing"))]
+
 #[cfg(panic = "abort")]
 compile_error!(
   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
