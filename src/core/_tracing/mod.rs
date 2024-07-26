@@ -70,10 +70,12 @@ cfg_tracing_actix! {
 ///   Ok(())
 /// }
 ///```
-pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
+pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync, is_trace: bool) {
   INIT.call_once(|| {
-    #[cfg(feature = "tracing-log")]
-    tracing_log::LogTracer::init().unwrap();
+    if is_trace {
+      #[cfg(feature = "tracing-log")]
+      tracing_log::LogTracer::init().unwrap();
+    }
     set_global_default(subscriber).unwrap();
   });
 }
