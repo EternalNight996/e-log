@@ -52,6 +52,15 @@ macro_rules! cfg_tracing_appender {
         )*
     }
 }
+#[allow(unused)]
+macro_rules! cfg_panic {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "panic")]
+            $item
+        )*
+    }
+}
 
 macro_rules! cfg_must {
   ($($item:item)*) => {

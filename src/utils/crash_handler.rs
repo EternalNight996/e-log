@@ -5,12 +5,9 @@ compile_error!(
 
 use e_utils::parse::AutoPath;
 use e_utils::Result;
-use once_cell::sync::Lazy;
+use e_utils::once_cell::sync::Lazy;
 use parking_lot::Mutex;
-// use rand::Rng;
 use tokio::sync::mpsc::Sender;
-
-// use crate::dialog;
 use std::borrow::Cow;
 use std::collections::HashSet;
 use std::fmt::Display;
@@ -20,7 +17,7 @@ use std::io::Write as _;
 use std::panic::{Location, PanicInfo};
 use std::path::PathBuf;
 use std::sync::OnceLock;
-
+use crate::preload::*;
 static PANIC_SIGNAL: OnceLock<Sender<SavedPanic>> = OnceLock::new();
 
 // Prevent panic handler from creating duplicate error logs
@@ -176,18 +173,18 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     // If another thread wrote the same panic, early exit.
     // We don't need duplicate crash logs and message boxes...
     if !PANICS.lock().insert(panic_log.clone()) {
-      crate::warn!("skipping duplicate panic");
+      warn!("skipping duplicate panic");
       return;
     }
 
     #[cfg(feature = "backtrace")]
-    crate::error!(
+    error!(
       "FATAL ERROR: \n{}\n\nBACKTRACE:\n{}",
       &panic_log.message,
       &panic_log.backtrace
     );
     #[cfg(not(feature = "backtrace"))]
-    crate::error!("FATAL ERROR: \n{}", &panic_log.message,);
+    error!("FATAL ERROR: \n{}", &panic_log.message,);
     // Save crash log to user's downloads folder
     let saved_to = {
       let write_error = |mut file: File| {
@@ -253,7 +250,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
 
     let message = move || {
       #[cfg(target_os = "windows")]
-      e_utils::dialog::dialog_err_block("❌错误跟踪Panic", &message)
+      e_utils::dialog::dialog_err_block("❌BUG跟踪Panic", &message)
     };
     let msg_box = std::thread::spawn(message);
 

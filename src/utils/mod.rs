@@ -1,12 +1,16 @@
-/// Panic
-pub mod crash_handler;
-pub use crash_handler::*;
-pub mod bad_modules;
-pub use bad_modules::*;
+cfg_panic! {
+    /// Panic
+    pub mod crash_handler;
+    pub use crash_handler::*;
+    /// Panic
+    pub mod bad_modules;
+    pub use bad_modules::*;
+}
 /// ``WINDOWS ONLY``: Have the application write to the terminal even with
 /// ``[windows_subsystem = "windows"]``
 ///
 /// This allows logs to be displayed when launched from the terminal.
+#[cfg(feature = "panic")]
 pub fn reattach_windows_terminal() {
     #[cfg(windows)]
     {

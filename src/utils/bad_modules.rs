@@ -1,8 +1,9 @@
 //! Keep track of modules that might have caused the program to panic
 
-use once_cell::sync::Lazy;
+use e_utils::once_cell::sync::Lazy;
 use parking_lot::RwLock;
 use std::path::{Path, PathBuf};
+use crate::preload::*;
 
 pub(crate) static BAD_MODULES: Lazy<BadModules> = Lazy::new(BadModules::default);
 
@@ -21,7 +22,7 @@ impl BadModules {
         F: Fn(PathBuf) + Send + Sync + 'static,
     {
         self.subscribers.write().push(Box::new(subscriber));
-        crate::info!("Registered callback!");
+        info!("Registered callback!");
     }
 
     fn push(&self, path: PathBuf) {
