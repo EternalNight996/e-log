@@ -3,11 +3,11 @@ compile_error!(
   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
 );
 
+use crate::{error, warn};
+use e_utils::once_cell::sync::Lazy;
 use e_utils::parse::AutoPath;
 use e_utils::Result;
-use e_utils::once_cell::sync::Lazy;
 use parking_lot::Mutex;
-use tokio::sync::mpsc::Sender;
 use std::borrow::Cow;
 use std::collections::HashSet;
 use std::fmt::Display;
@@ -17,7 +17,7 @@ use std::io::Write as _;
 use std::panic::{Location, PanicInfo};
 use std::path::PathBuf;
 use std::sync::OnceLock;
-use crate::preload::*;
+use tokio::sync::mpsc::Sender;
 static PANIC_SIGNAL: OnceLock<Sender<SavedPanic>> = OnceLock::new();
 
 // Prevent panic handler from creating duplicate error logs
@@ -149,16 +149,16 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     #[cfg(feature = "backtrace")]
     let backtrace = std::backtrace::Backtrace::force_capture().to_string();
 
-    #[cfg(feature = "built")]
-    let build_info = {
-      use crate::ui::build_info::info;
-      use std::fmt::Write;
+    // #[cfg(feature = "built")]
+    // let build_info = {
+    //   use crate::ui::build_info::info;
+    //   use std::fmt::Write;
 
-      info(true).fold(String::new(), |mut out, (label, value)| {
-        writeln!(&mut out, "{label}: {value}").unwrap();
-        out
-      })
-    };
+    //   info(true).fold(String::new(), |mut out, (label, value)| {
+    //     writeln!(&mut out, "{label}: {value}").unwrap();
+    //     out
+    //   })
+    // };
 
     let panic_log = Panic {
       file: dump.file().to_owned(),
@@ -180,8 +180,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     #[cfg(feature = "backtrace")]
     error!(
       "FATAL ERROR: \n{}\n\nBACKTRACE:\n{}",
-      &panic_log.message,
-      &panic_log.backtrace
+      &panic_log.message, &panic_log.backtrace
     );
     #[cfg(not(feature = "backtrace"))]
     error!("FATAL ERROR: \n{}", &panic_log.message,);
@@ -220,7 +219,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
           &panic_log.backtrace
         );
       };
-      
+
       match std::fs::File::create(&log_path) {
         Err(_) => None,
         Ok(file) => {
