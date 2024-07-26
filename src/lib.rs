@@ -26,6 +26,9 @@
 #[macro_use]
 mod macros;
 
+#[cfg(all(feature = "log", feature = "tracing"))]
+compile_error!("Feature 'log' and 'tracing' cannot exists tow to be enabled.");
+
 cfg_must! {
   /// core
   pub mod core;

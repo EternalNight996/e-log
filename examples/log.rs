@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate e_log;
-
 #[cfg(feature = "log")]
 fn main() {
   use std::{fs::OpenOptions, io::Write as _, time::Duration};

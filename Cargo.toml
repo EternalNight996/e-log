@@ -75,9 +75,8 @@ e-log = { path = "./", features = [
   # "tracing-subscriber",
   # "log-tauri",
   "panic",
-  "log",
-  # "log"
-  # "tracing"
+  # "log",
+  "tracing"
 ] }
 tauri = { version = "1.6" }
 tokio = { version = "1" }
@@ -105,7 +104,7 @@ path = "examples/log-panic.rs"
 
 [package]
 name = "e-log"
-version = "0.2.0-beta.7"
+version = "0.2.0-beta.8"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
