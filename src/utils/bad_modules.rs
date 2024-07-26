@@ -1,6 +1,5 @@
 //! Keep track of modules that might have caused the program to panic
-#![cfg(any(feature = "log", feature = "tracing"))]
-use crate::info;
+use crate::info2;
 use e_utils::once_cell::sync::Lazy;
 use parking_lot::RwLock;
 use std::path::{Path, PathBuf};
@@ -22,7 +21,7 @@ impl BadModules {
     F: Fn(PathBuf) + Send + Sync + 'static,
   {
     self.subscribers.write().push(Box::new(subscriber));
-    info!("Registered callback!");
+    info2!("Registered callback!");
   }
 
   fn push(&self, path: PathBuf) {

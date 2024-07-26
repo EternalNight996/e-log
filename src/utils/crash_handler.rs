@@ -1,11 +1,9 @@
-#![cfg(any(feature = "log", feature = "tracing"))]
-
 #[cfg(panic = "abort")]
 compile_error!(
   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
 );
 
-use crate::{error, warn};
+use crate::{error2, warn2};
 use e_utils::once_cell::sync::Lazy;
 use e_utils::parse::AutoPath;
 use e_utils::Result;
@@ -175,12 +173,12 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     // If another thread wrote the same panic, early exit.
     // We don't need duplicate crash logs and message boxes...
     if !PANICS.lock().insert(panic_log.clone()) {
-      warn!("skipping duplicate panic");
+      warn2!("skipping duplicate panic");
       return;
     }
 
     #[cfg(feature = "backtrace")]
-    error!(
+    error2!(
       "FATAL ERROR: \n{}\n\nBACKTRACE:\n{}",
       &panic_log.message, &panic_log.backtrace
     );
