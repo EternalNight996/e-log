@@ -13,7 +13,13 @@
     <th><h3 style="color:#fff">Unix</h3></th>
     <th><h3 style="color:#fff">Macos</h3></th>
   </tr>
-   <tr>
+  <tr>
+    <td>panic</td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
+    <td><h4 style="color:green">√</h4></td>
+  </tr>
+  <tr>
     <td>actix</td>
     <td><h4 style="color:green">√</h4></td>
     <td><h4 style="color:green">√</h4></td>
@@ -50,12 +56,19 @@
 # ✨ 分支
 ```toml
 [features]
-log-actix = ["env_logger", "log"]
-tracing-actix = [
-  "tracing-actix-web",
-  "tracing",
-  "tracing-log",
+backtrace = []
+built = []
+panic = [
+  "backtrace",
+  "tokio",
+  "tokio/sync",
+  "parking_lot",
+  "e-utils/dialog",
+  "windows-sys/Win32_System_Console",
+  "windows-sys/Win32_Foundation",
 ]
+log-actix = ["env_logger", "log"]
+tracing-actix = ["tracing-actix-web", "tracing"]
 tracing-appender = [
   "tracing-subscriber/fmt",
   "tracing-subscriber/std",
