@@ -85,26 +85,9 @@ tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }
 
 
-[[example]]
-name = "tracing"
-path = "examples/tracing.rs"
-[[example]]
-name = "log"
-path = "examples/log.rs"
-[[example]]
-name = "tracing-actix"
-path = "examples/tracing-actix.rs"
-[[example]]
-name = "log-actix"
-path = "examples/log-actix.rs"
-[[example]]
-name = "log-panic"
-path = "examples/log-panic.rs"
-
-
 [package]
 name = "e-log"
-version = "0.2.0-beta.10"
+version = "0.2.0-beta.12"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

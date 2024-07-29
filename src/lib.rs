@@ -37,7 +37,6 @@ cfg_must! {
   /// preload
   #[path = "./preload.rs"]
   pub mod preload;
+  /// panic
+  pub mod panic;
 }
-
-/// 扩展工具
-pub mod utils;
