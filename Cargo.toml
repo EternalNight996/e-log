@@ -44,7 +44,7 @@ tauri = { version = "1.6", default-features = false, optional = true }
 serde_repr = { version = "0.1", optional = true }
 byte-unit = { version = "5", optional = true }
 fern = { version = "0.6", optional = true }
-log = { version = "^0.4.21", optional = true }
+log = { version = "0.4", optional = true }
 tracing-actix-web = { version = "0.7", optional = true }
 tracing = { version = "0.1", optional = true }
 tracing-subscriber = { version = "0.3", features = [
