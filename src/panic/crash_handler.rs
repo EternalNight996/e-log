@@ -3,7 +3,7 @@ compile_error!(
   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
 );
 
-use crate::{error2, warn2};
+use crate::preload::*;
 use e_utils::once_cell::sync::Lazy;
 use e_utils::parse::AutoPath;
 use e_utils::Result;
