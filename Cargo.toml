@@ -99,7 +99,7 @@ license-file = "MIT-LICENSE"
 readme = "README.md"
 documentation = "https://docs.rs/e-log"
 repository = "https://gitee.com/eternalnight996/e-log"
-include = ["src/", "*.md", "*-LICENSE", "Cargo.toml"]
+include = ["src/", "*.md", "*-LICENSE", "Cargo.toml","examples"]
 keywords = ["log", "tracing", "e-", "tauri"]
 categories = ["development-tools::debugging"]
 
