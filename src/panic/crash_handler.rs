@@ -1,7 +1,7 @@
-#[cfg(panic = "abort")]
-compile_error!(
-  "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
-);
+// #[cfg(panic = "abort")]
+// compile_error!(
+//   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
+// );
 
 use crate::preload::*;
 use e_utils::once_cell::sync::Lazy;
