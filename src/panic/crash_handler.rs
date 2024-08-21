@@ -248,8 +248,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     }
 
     let message = move || {
-      #[cfg(target_os = "windows")]
-      e_utils::dialog::dialog_err_block("❌BUG跟踪Panic", &message)
+      e_utils::dialog::sync::error("❌BUG跟踪Panic", &message)
     };
     let msg_box = std::thread::spawn(message);
 
