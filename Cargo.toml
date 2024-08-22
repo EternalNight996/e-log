@@ -5,12 +5,13 @@ proc-macro = false
 [features]
 backtrace = []
 built = []
+dialog = ["e-utils/dialog"]
 panic = [
   "backtrace",
   "tokio",
   "tokio/sync",
   "parking_lot",
-  "e-utils/dialog",
+  "dialog",
   "windows-sys/Win32_System_Console",
   "windows-sys/Win32_Foundation",
 ]
@@ -55,7 +56,7 @@ tracing-subscriber = { version = "0.3", features = [
 ], optional = true }
 env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
-e-utils = { version = "0.3.71", features = ["fs_ext", "dialog"] }
+e-utils = { version = "0.3.71", features = ["fs_ext"] }
 crossbeam-channel = { version = "0.5", optional = true }
 parking_lot = { version = "0.12", optional = true }
 thiserror = { version = "1", optional = true }
@@ -70,10 +71,11 @@ tokio = { version = "1", optional = true }
 [dev-dependencies]
 e-log = { path = "./", features = [
   # "tracing-actix",
-  # "tracing-appender",
-  # "tracing-subscriber",
+  "tracing-appender",
+  "tracing-subscriber",
   # "log-tauri",
   "panic",
+  "dialog",
   # "log",
   "tracing",
 ] }
@@ -86,7 +88,7 @@ criterion = { version = "0.3.6", default-features = false }
 
 [package]
 name = "e-log"
-version = "0.2.4"
+version = "0.2.5"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",

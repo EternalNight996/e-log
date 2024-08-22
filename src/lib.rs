@@ -39,4 +39,7 @@ cfg_must! {
   pub mod preload;
   /// panic
   pub mod panic;
+  /// dialog
+  #[cfg(feature="dialog")]
+  pub mod dialog;
 }
