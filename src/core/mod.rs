@@ -15,99 +15,11 @@ cfg_log! {
   pub use log::{error,debug,warn,info,trace};
 }
 pub use e_utils::fs::FileShare;
-use e_utils::{CResult, Result};
 use serde::{Deserialize, Serialize};
-use std::{borrow::Cow, path::PathBuf, str::FromStr};
-/// 针对结果的解析打印
-pub trait AutoLevelRes<T> {
-  /// 自动
-  fn print(self, add: &str, target: &str) -> Self;
-  /// 带错误
-  fn eprint(self, add: &str, target: &str) -> Self;
-}
+use std::{path::PathBuf, str::FromStr};
 
-/// 便捷打印
-pub trait AutoLevel {
-  /// 自动判断类型， 如LevelData 和AsRef<str> 默认标签LevelTag::Unknow
-  fn print(&self, target: &str, level: Level) -> bool;
-}
-
-impl<S: AsRef<str>> AutoLevel for S {
-  fn print(&self, target: &str, level: Level) -> bool {
-    let data = self.as_ref();
-    match level {
-      Level::Trace => trace2!(target:target, data),
-      Level::Debug => debug2!(target:target, data),
-      Level::Info => info2!(target:target, data),
-      Level::Warn => warn2!(target:target, data),
-      Level::Error => error2!(target:target, data),
-      Level::Off => return false,
-    };
-    true
-  }
-}
-impl<T> AutoLevelRes<T> for CResult<T> {
-  fn print(self, add: &str, target: &str) -> Self {
-    match &self {
-      CResult::Ok(_x) => info2!(target:target, add),
-      CResult::Err(x) => warn2!(target:target, "{}: {}", add, x),
-    };
-    self
-  }
-
-  fn eprint(self, add: &str, target: &str) -> Self {
-    match &self {
-      CResult::Ok(_x) => info2!(target:target, add),
-      CResult::Err(x) => error2!(target:target, "{}: {}", add, x,),
-    };
-    self
-  }
-}
-
-impl<T> AutoLevelRes<T> for Result<T> {
-  fn print(self, add: &str, target: &str) -> Self {
-    match &self {
-      Ok(_x) => info2!(target:target, add),
-      Err(x) => warn2!(target:target, "{}: {}", add, x,),
-    };
-    self
-  }
-
-  fn eprint(self, add: &str, target: &str) -> Self {
-    match &self {
-      Ok(_x) => info2!(target:target, add),
-      Err(x) => error2!(target:target, "{}: {}", add, x,),
-    };
-    self
-  }
-}
-/// 基础标签
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub enum LevelTag {
-  /// 未知
-  Unknow,
-  /// 文件
-  File,
-  /// 日志
-  Log,
-  /// 系统
-  System,
-  /// 权限
-  Permissions,
-  /// 前端
-  Ui,
-  /// 数据库
-  Database,
-  /// 自定义
-  Other(Cow<'static, str>),
-}
-impl Default for LevelTag {
-  fn default() -> Self {
-    LevelTag::Unknow
-  }
-}
 /// 日志等级
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize, Default)]
 pub enum Level {
   /// A level lower than all log levels.
   Off,
@@ -116,31 +28,14 @@ pub enum Level {
   /// Corresponds to the `Warn` log level.
   Warn,
   /// Corresponds to the `Info` log level.
+  #[default]
   Info,
   /// Corresponds to the `Debug` log level.
   Debug,
   /// Corresponds to the `Trace` log level.
   Trace,
 }
-impl Default for Level {
-  fn default() -> Self {
-    Self::Info
-  }
-}
-/// Level数据结构
-#[derive(Deserialize, Serialize, Debug)]
-pub struct LevelData<T: Serialize, S: Serialize> {
-  /// 主体
-  pub msg: T,
-  /// 标签
-  pub target: S,
-}
-impl<T: Serialize, S: Serialize> LevelData<T, S> {
-  /// 序列化
-  pub fn to_string(&self) -> String {
-    serde_json::to_string(self).unwrap_or_default()
-  }
-}
+
 impl Level {
   /// 写入日志
   pub fn add<T, S>(&self, msg: T, target: S) -> bool
