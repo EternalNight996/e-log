@@ -16,13 +16,14 @@ cfg_log! {
 }
 pub use e_utils::fs::FileShare;
 use serde::{Deserialize, Serialize};
-use std::{path::PathBuf, str::FromStr};
+use std::path::PathBuf;
+use strum::*;
 
 /// 日志等级
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize, Default)]
+#[derive(Clone, Copy, Debug, Default, EnumString, EnumIter, Display)]
 pub enum Level {
   /// A level lower than all log levels.
-  Off,
+  Off = 1,
   /// Corresponds to the `Error` log level.
   Error,
   /// Corresponds to the `Warn` log level.
@@ -111,33 +112,6 @@ impl Level {
   /// 输出成字符串
   pub fn to_string(&self) -> String {
     self.to_level_filter().to_string()
-  }
-}
-
-impl core::fmt::Display for Level {
-  fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-    write!(f, "{}", self.to_string())
-  }
-}
-
-#[cfg(feature = "log")]
-impl From<&str> for Level {
-  fn from(s: &str) -> Self {
-    let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::Off).into();
-    level
-  }
-}
-#[cfg(feature = "tracing")]
-impl From<&str> for Level {
-  fn from(s: &str) -> Self {
-    let level: Level = LevelFilter::from_str(s).unwrap_or(LevelFilter::OFF).into();
-    level
-  }
-}
-
-impl From<String> for Level {
-  fn from(s: String) -> Self {
-    s.as_str().into()
   }
 }
 

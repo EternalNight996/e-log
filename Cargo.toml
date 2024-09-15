@@ -65,7 +65,8 @@ time = { version = "0.3", features = [
   "parsing",
 ], default-features = false, optional = true }
 tokio = { version = "1", optional = true }
-derive_more = {version = "1.0.0", features = ["display"]}
+paste = "1.0"
+strum = { version = "0.26", features = ["derive"] }
 
 # If you copy one of the examples into a new project, you should be using
 # [dependencies] instead, and delete the **path**.
