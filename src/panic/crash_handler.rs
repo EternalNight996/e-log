@@ -180,7 +180,8 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
     #[cfg(feature = "backtrace")]
     error2!(
       "FATAL ERROR: \n{}\n\nBACKTRACE:\n{}",
-      &panic_log.message, &panic_log.backtrace
+      &panic_log.message,
+      &panic_log.backtrace
     );
     #[cfg(not(feature = "backtrace"))]
     error!("FATAL ERROR: \n{}", &panic_log.message,);
@@ -247,9 +248,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
       });
     }
 
-    let message = move || {
-      e_utils::dialog::sync::error("❌BUG跟踪Panic", &message)
-    };
+    let message = move || e_utils::dialog::sync::error("❌BUG跟踪Panic", &message);
     let msg_box = std::thread::spawn(message);
 
     // Only block if panic came from main thread.

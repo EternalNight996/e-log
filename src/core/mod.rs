@@ -20,7 +20,8 @@ use std::path::PathBuf;
 use strum::*;
 
 /// 日志等级
-#[derive(Clone, Copy, Debug, Default, EnumString, EnumIter, Display)]
+#[derive(Clone, Copy, Debug, Default, FromRepr, Display)]
+#[repr(u8)]
 pub enum Level {
   /// A level lower than all log levels.
   Off = 1,
