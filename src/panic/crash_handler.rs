@@ -14,7 +14,7 @@ use std::fmt::Display;
 use std::fs::File;
 use std::hash::Hash;
 use std::io::Write as _;
-use std::panic::{Location, PanicHookInfo};
+use std::panic::{Location, PanicInfo};
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::sync::mpsc::Sender;
@@ -94,7 +94,7 @@ impl<'a> Dump<'a> {
 }
 
 impl<'a> Dump<'a> {
-  fn from_panic(panic_info: &'a PanicHookInfo<'_>) -> Self {
+  fn from_panic(panic_info: &'a PanicInfo<'_>) -> Self {
     let location = panic_info.location();
 
     let message: Option<Cow<'_, str>> = match panic_info.payload().downcast_ref::<String>() {
