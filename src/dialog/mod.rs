@@ -1,7 +1,7 @@
 macro_rules! define_box_functions {
   ($(($name:ident, $level:ident, $fnname:ident, $res:ty)),+) => {
       $(
-          #[doc(hidden)]
+        ///
           pub fn $name(title: &str, msg: impl Into<String>) -> $res {
             let msg = msg.into();
             crate::preload::$level!(msg);
@@ -9,7 +9,7 @@ macro_rules! define_box_functions {
           }
 
           paste::paste! {
-              #[doc(hidden)]
+            ///
               pub async fn [<a_ $name>](title: &str, msg: impl Into<String>) -> $res {
                 let msg = msg.into();
                 crate::preload::$level!(msg);
