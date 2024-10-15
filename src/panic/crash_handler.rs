@@ -4,8 +4,8 @@
 // );
 
 use crate::preload::*;
+use e_utils::fs::AutoPath as _;
 use e_utils::once_cell::sync::Lazy;
-use e_utils::parse::AutoPath;
 use e_utils::Result;
 use parking_lot::Mutex;
 use std::borrow::Cow;
