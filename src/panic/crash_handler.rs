@@ -137,9 +137,10 @@ impl<'a> Display for Dump<'a> {
 }
 
 /// Provide human friendly crash reporting
-pub fn set_panic_hook<P: AsRef<std::path::Path>>(log_path: P) -> Result<()> {
-  let log_path = log_path.as_ref().to_path_buf();
-  log_path.auto_create_dir()?;
+pub fn set_panic_hook<P: AsRef<std::path::Path>>(folder: P, fname: &str) -> Result<()> {
+  let folder = folder.as_ref();
+  let log_path = folder.join(fname);
+  folder.auto_create_dir()?;
   std::panic::set_hook(Box::new(move |panic_info| {
     // Set stop_flag to abort to stop ripping process
 

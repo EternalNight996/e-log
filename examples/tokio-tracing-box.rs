@@ -11,7 +11,7 @@ async fn main() -> e_utils::Result<()> {
   use e_log::subscriber::layer::SubscriberExt as _;
   use e_log::subscriber::{self, Registry};
   use e_log::{preload::*, Level, __private::subscriber::Subscriber};
-  use e_utils::parse::AutoPath as _;
+  use e_utils::fs::AutoPath as _;
   use std::env::current_dir;
   use std::path::Path;
   use tracing_subscriber::fmt::time::ChronoUtc;
@@ -27,16 +27,20 @@ async fn main() -> e_utils::Result<()> {
       .with(base_layer);
     def
   }
-  fn init(fpath: impl AsRef<Path>, sub: impl Subscriber + Send + Sync) -> e_utils::Result<()> {
+  fn init(
+    folder: impl AsRef<Path>,
+    fname: &str,
+    sub: impl Subscriber + Send + Sync,
+  ) -> e_utils::Result<()> {
     e_log::panic::reattach_windows_terminal();
-    e_log::panic::set_panic_hook(fpath)?;
+    e_log::panic::set_panic_hook(folder, fname)?;
     init_subscriber(sub, false);
     Ok(())
   }
   let folder = current_dir().unwrap().join("test");
   folder.auto_create_dir()?;
   let subscriber = get_subscriber(Level::Debug);
-  init(folder.join("bug.test.log"), subscriber)?;
+  init(folder, "bug.test.log", subscriber)?;
   a_info_box("测试", "INFO").await;
   a_error_box("测试", "ERROR").await;
   a_warn_box("测试", "WARN").await;

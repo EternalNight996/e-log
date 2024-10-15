@@ -1,9 +1,9 @@
 #[cfg(all(
-    feature = "tracing",
-    feature = "panic",
-    feature = "dialog",
-    feature = "tracing-appender",
-    feature = "tracing-subscriber"
+  feature = "tracing",
+  feature = "panic",
+  feature = "dialog",
+  feature = "tracing-appender",
+  feature = "tracing-subscriber"
 ))]
 // e_utils = {version="0.3", features=["tracing","panic","dialog","tracing-appender","tracing-subscriber"]}
 fn main() -> e_utils::Result<()> {
@@ -12,7 +12,7 @@ fn main() -> e_utils::Result<()> {
   use e_log::subscriber::{self, Registry};
   use e_log::{appender, init_subscriber};
   use e_log::{preload::*, Level, __private::subscriber::Subscriber};
-  use e_utils::parse::AutoPath as _;
+  use e_utils::fs::AutoPath as _;
   use std::env::current_dir;
   use std::path::Path;
   use tracing_subscriber::fmt::time::ChronoUtc;
@@ -41,16 +41,20 @@ fn main() -> e_utils::Result<()> {
       .with(file_layer);
     (def, vec![guard, guard2])
   }
-  fn init(fpath: impl AsRef<Path>, sub: impl Subscriber + Send + Sync) -> e_utils::Result<()> {
+  fn init(
+    folder: impl AsRef<Path>,
+    fname: &str,
+    sub: impl Subscriber + Send + Sync,
+  ) -> e_utils::Result<()> {
     e_log::panic::reattach_windows_terminal();
-    e_log::panic::set_panic_hook(fpath)?;
+    e_log::panic::set_panic_hook(folder, fname)?;
     init_subscriber(sub, false);
     Ok(())
   }
   let folder = current_dir().unwrap().join("test");
   folder.auto_create_dir()?;
   let (subscriber, _guards) = get_subscriber(&folder, "test.log", Level::Info);
-  init(folder.join("bug.test.log"), subscriber)?;
+  init(folder, "bug.test.log", subscriber)?;
   info!("info");
   debug!("debug");
   error!("error");
