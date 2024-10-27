@@ -161,7 +161,7 @@ impl ToString for LogTarget {
 }
 impl LogTarget {
   /// 解析
-  pub fn from_str(s: &str) -> e_utils::Result<Self> {
+  pub fn from_str(s: &str) -> e_utils::AnyResult<Self> {
     Ok(match s {
       "Stdout" => Self::Stdout,
       "Stderr" => Self::Stderr,
@@ -169,7 +169,7 @@ impl LogTarget {
       "OutDirJson" => Self::OutDir(LogOutDirType::Json),
       "OutDirText" => Self::OutDir(LogOutDirType::Text),
       "Web" => Self::Web,
-      _ => return Err(e_utils::Error::String(s.to_string())),
+      _ => return Err(s.into()),
     })
   }
   /// 设置Folder路径
