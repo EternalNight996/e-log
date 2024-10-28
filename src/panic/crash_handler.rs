@@ -6,7 +6,7 @@
 use crate::preload::*;
 use e_utils::fs::AutoPath as _;
 use e_utils::once_cell::sync::Lazy;
-use e_utils::Result;
+use e_utils::AnyResult;
 use parking_lot::Mutex;
 use std::borrow::Cow;
 use std::collections::HashSet;
@@ -136,7 +136,7 @@ impl<'a> Display for Dump<'a> {
 }
 
 /// Provide human friendly crash reporting
-pub fn set_panic_hook<P: AsRef<std::path::Path>>(folder: P, fname: &str) -> Result<()> {
+pub fn set_panic_hook<P: AsRef<std::path::Path>>(folder: P, fname: &str) -> AnyResult<()> {
   let folder = folder.as_ref();
   let log_path = folder.join(fname);
   folder.auto_create_dir()?;
