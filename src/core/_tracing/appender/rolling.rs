@@ -28,8 +28,8 @@
 //! ```
 use super::sync::{RwLock, RwLockReadGuard};
 #[cfg(target_os = "windows")]
-use e_utils::fs::FileOptionsExt;
-use e_utils::fs::FileShare;
+use e_utils::fs::options::FileOptionsExt;
+use e_utils::fs::options::FileShare;
 use std::{
   fmt::{self, Debug},
   fs::{self, File, OpenOptions},

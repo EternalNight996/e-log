@@ -1,5 +1,5 @@
 use super::{RollingFileAppender, Rotation};
-use e_utils::fs::FileShare;
+use e_utils::fs::options::FileShare;
 use std::{io, path::Path};
 use thiserror::Error;
 

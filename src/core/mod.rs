@@ -14,7 +14,7 @@ cfg_log! {
   pub use log::LevelFilter;
   pub use log::{error,debug,warn,info,trace};
 }
-pub use e_utils::fs::FileShare;
+pub use e_utils::fs::options::FileShare;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use strum::*;
