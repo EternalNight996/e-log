@@ -5,7 +5,7 @@
   feature = "tracing-subscriber"
 ))]
 // e_utils = {version="0.3", features=["tracing","panic","dialog","tracing-subscriber"]}
-fn main() -> e_utils::Result<()> {
+fn main() -> e_utils::AnyResult<()> {
   use e_log::init_subscriber;
   use e_log::subscriber::layer::SubscriberExt as _;
   use e_log::subscriber::{self, Registry};
@@ -30,7 +30,7 @@ fn main() -> e_utils::Result<()> {
     folder: impl AsRef<Path>,
     fname: &str,
     sub: impl Subscriber + Send + Sync,
-  ) -> e_utils::Result<()> {
+  ) -> e_utils::AnyResult<()> {
     e_log::panic::reattach_windows_terminal();
     e_log::panic::set_panic_hook(folder, fname)?;
     init_subscriber(sub, false);

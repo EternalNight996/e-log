@@ -92,7 +92,7 @@ criterion = { version = "0.3.6", default-features = false }
 
 [package]
 name = "e-log"
-version = "0.2.6"
+version = "0.2.7"
 description = "a rust log"
 authors = [
   "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
