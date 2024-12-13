@@ -17,8 +17,6 @@ panic = [
   "e-utils/once_cell",
   "e-utils/parse",
 ]
-log-actix = ["env_logger", "log"]
-tracing-actix = ["tracing-actix-web", "tracing"]
 tracing-appender = [
   "tracing-subscriber/fmt",
   "tracing-subscriber/std",
@@ -27,15 +25,13 @@ tracing-appender = [
   "crossbeam-channel",
   "time",
 ]
-log-tauri = [
-  "log",
-  "log/kv_unstable",
-  "fern",
-  "byte-unit",
-  "serde_repr",
-  "tauri",
+default = [
+  "tracing-appender",
+  "tracing-subscriber",
+  "panic",
+  "dialog",
+  "tracing",
 ]
-default = []
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.52", features = [] }
@@ -43,12 +39,7 @@ windows-sys = { version = "0.52", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6", default-features = false, optional = true }
-serde_repr = { version = "0.1", optional = true }
-byte-unit = { version = "5", optional = true }
-fern = { version = "0.6", optional = true }
 log = { version = "0.4", optional = true }
-tracing-actix-web = { version = "0.7", optional = true }
 tracing = { version = "0.1", optional = true }
 tracing-subscriber = { version = "0.3", features = [
   "env-filter",
@@ -56,12 +47,11 @@ tracing-subscriber = { version = "0.3", features = [
   "json",
   "chrono",
 ], optional = true }
-env_logger = { version = "0.11", optional = true }
 tracing-log = { version = "0.2", optional = true }
 e-utils = { version = "0.4", features = ["fs_ext"] }
 crossbeam-channel = { version = "0.5", optional = true }
 parking_lot = { version = "0.12", optional = true }
-thiserror = { version = "1", optional = true }
+thiserror = { version = "2", optional = true }
 time = { version = "0.3", features = [
   "formatting",
   "parsing",
@@ -73,39 +63,26 @@ strum = { version = "0.26", features = ["derive"] }
 # If you copy one of the examples into a new project, you should be using
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
-e-log = { path = "./", features = [
-  # "tracing-actix",
-  "tracing-appender",
-  "tracing-subscriber",
-  # "log-tauri",
-  "panic",
-  "dialog",
-  # "log",
-  "tracing",
-] }
-tauri = { version = "1.6" }
+e-log = { path = "./", features = [] }
 tokio = { version = "1" }
-actix-web = { version = "4" }
 tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }
 
 
 [package]
 name = "e-log"
-version = "0.2.7"
+version = "0.3.0"
 description = "a rust log"
-authors = [
-  "Eternal Night <EternalNight996@gmail.com, EternalNightYeah2@yeah.net>",
-]
+authors = ["Eternal(梦游) <EternalNightYeah2@yeah.net>"]
 edition = "2021"
 rust-version = "1.76.0"
 homepage = "https://gitee.com/eternalnight996"
-license-file = "MIT-LICENSE"
+license-file = "LICENSE"
 readme = "README.md"
 documentation = "https://docs.rs/e-log"
 repository = "https://gitee.com/eternalnight996/e-log"
-include = ["src/", "*.md", "*-LICENSE", "Cargo.toml", "examples"]
-keywords = ["log", "tracing", "e-", "tauri"]
+include = ["src/", "*.md", "LICENSE", "COPYRIGHT", "Cargo.toml"]
+keywords = ["log", "tracing", "e-", "frame"]
 categories = ["development-tools::debugging"]
 
 [package.metadata.docs.rs]

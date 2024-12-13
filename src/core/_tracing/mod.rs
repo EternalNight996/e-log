@@ -14,9 +14,7 @@ cfg_tracing_appender! {
 #[cfg(feature = "tracing-subscriber")]
 pub use tracing_subscriber as subscriber;
 
-cfg_tracing_actix! {
-    pub use tracing_actix_web as actix;
-}
+
 
 /// # Examples
 ///```rust

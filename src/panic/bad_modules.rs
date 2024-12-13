@@ -72,22 +72,3 @@ where
 
   LogOnUnwind::new(path).execute(func)
 }
-
-// /// This subscription reports when a module caused a crash
-// pub fn subscription() -> iced::Subscription<PathBuf> {
-//     use iced::futures::SinkExt;
-//     use std::any::TypeId;
-
-//     iced::subscription::channel(TypeId::of::<BadModules>(), 32, |mut output| async move {
-//         let (tx, mut rx) = mpsc::channel(32);
-
-//         BAD_MODULES.add_subscriber(move |path| {
-//             let _ = tx.blocking_send(path);
-//         });
-
-//         loop {
-//             let added = rx.recv().await.unwrap();
-//             let _ = output.send(added).await;
-//         }
-//     })
-// }

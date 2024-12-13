@@ -16,33 +16,7 @@ macro_rules! cfg_tracing {
         )*
     }
 }
-#[allow(unused)]
-macro_rules! cfg_log_tauri {
-    ($($item:item)*) => {
-        $(
-            #[cfg(feature = "log-tauri")]
-            $item
-        )*
-    }
-}
-#[allow(unused)]
-macro_rules! cfg_log_actix {
-    ($($item:item)*) => {
-        $(
-            #[cfg(feature = "log-actix")]
-            $item
-        )*
-    }
-}
-#[allow(unused)]
-macro_rules! cfg_tracing_actix {
-    ($($item:item)*) => {
-        $(
-            #[cfg(feature = "tracing-actix")]
-            $item
-        )*
-    }
-}
+
 #[allow(unused)]
 macro_rules! cfg_tracing_appender {
     ($($item:item)*) => {
