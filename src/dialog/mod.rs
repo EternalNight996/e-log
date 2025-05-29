@@ -4,7 +4,7 @@ macro_rules! define_box_functions {
         ///
           pub fn $name(title: &str, msg: impl Into<String>) -> $res {
             let msg = msg.into();
-            crate::preload::$level!(msg);
+            crate::preload::$level!("{}", msg);
             e_utils::dialog::sync::$fnname(title,msg)
           }
 
@@ -12,7 +12,7 @@ macro_rules! define_box_functions {
             ///
               pub async fn [<a_ $name>](title: &str, msg: impl Into<String>) -> $res {
                 let msg = msg.into();
-                crate::preload::$level!(msg);
+                crate::preload::$level!("{}", msg);
                 e_utils::dialog::a_sync::$fnname(title,msg).await
               }
           }

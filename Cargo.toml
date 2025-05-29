@@ -25,12 +25,15 @@ tracing-appender = [
   "crossbeam-channel",
   "time",
 ]
+tracing = ["dep:tracing"]
+log = ["dep:log"]
 default = [
-  "tracing-appender",
-  "tracing-subscriber",
-  "panic",
-  "dialog",
-  "tracing",
+  # "tracing-appender",
+  # "tracing-subscriber",
+  # "panic",
+  # "dialog",
+  # "tracing",
+  "log"
 ]
 
 [target.'cfg(windows)'.dependencies]
@@ -71,7 +74,7 @@ criterion = { version = "0.3.6", default-features = false }
 
 [package]
 name = "e-log"
-version = "0.3.0"
+version = "0.4.0"
 description = "a rust log"
 authors = ["Eternal(梦游) <EternalNightYeah2@yeah.net>"]
 edition = "2021"

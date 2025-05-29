@@ -47,6 +47,7 @@ macro_rules! cfg_must {
   };
 }
 
+///
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[macro_export]
 macro_rules! info2 {
@@ -58,6 +59,7 @@ macro_rules! info2 {
 }
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[macro_export]
+/// 此宏用于记录警告级别的日志。当 `log` 特性启用且 `tracing` 特性未启用时，使用 `slog` 进行日志记录；当 `tracing` 特性启用且 `log` 特性未启用时，使用 `tracing` 进行日志记录。
 macro_rules! warn2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
@@ -67,6 +69,7 @@ macro_rules! warn2 {
 }
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[macro_export]
+/// 此宏用于记录错误级别的日志。当 `log` 特性启用且 `tracing` 特性未启用时，使用 `slog` 进行日志记录；当 `tracing` 特性启用且 `log` 特性未启用时，使用 `tracing` 进行日志记录。
 macro_rules! error2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
@@ -74,6 +77,7 @@ macro_rules! error2 {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:$target, $crate::core::_log::__private::StdLevel::Error, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, $($arg)+))
 }
+///
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[macro_export]
 macro_rules! debug2 {
@@ -83,6 +87,7 @@ macro_rules! debug2 {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target: &$target, $crate::core::_log::__private::StdLevel::Debug, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, $($arg)+))
 }
+///
 #[cfg(all(feature="log", not(feature="tracing")))]
 #[macro_export]
 macro_rules! trace2 {

@@ -1,8 +1,9 @@
 #[cfg(feature = "log")]
 fn main() {
-  use std::{fs::options::OpenOptions, io::Write as _, time::Duration};
+  use e_log::preload::*;
   use e_utils::fs::options::{FileExt as _, FileOptionsExt};
-  info!(target: "test","info");
+  use std::{fs::OpenOptions, io::Write as _, time::Duration};
+  info!("test");
   debug!("debug");
   error!("error");
   trace!("trace");
@@ -20,7 +21,8 @@ fn main() {
       .write(format!("{i}.locke write\n").as_bytes())
       .inspect_err(|e| eprintln!("{}", e));
     if i > 20 {
-      let _ = f.unlock();
+      // 按照要求使用完全限定语法调用 unlock 方法
+      let _ = <_ as e_utils::fs::options::FileExt>::unlock(&f).unwrap();
     }
     let x = f.allocated_size().unwrap();
     println!("allocated -> {x}");

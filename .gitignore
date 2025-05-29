@@ -6,3 +6,4 @@ Cargo.lock
 /exmaples/Cargo.lock
 /logs
 /test
+*.txt
