@@ -153,53 +153,53 @@ macro_rules! trace2 {
 #[macro_export]
 /// 打印日志info（宏版本）
 macro_rules! p {
-  ($v:expr) => {{
+  ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!("{}", $v);
+    println!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
-    $crate::preload::info!("{}", $v);
+    $crate::preload::info!($($arg)+);
   }};
 }
 
 /// 打印日志error（宏版本）
 #[macro_export]
 macro_rules! ep {
-  ($v:expr) => {{
+  ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!("{}", $v);
+    println!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
-    $crate::preload::error!("{}", $v);
+    $crate::preload::error!($($arg)+);
   }};
 }
 
 /// 打印日志warn（宏版本）
 #[macro_export]
 macro_rules! wp {
-  ($v:expr) => {{
+  ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!("{}", $v);
+    println!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
-    $crate::preload::warn!("{}", $v);
+    $crate::preload::warn!($($arg)+);
   }};
 }
 
 /// 打印日志debug（宏版本）
 #[macro_export]
 macro_rules! dp {
-  ($v:expr) => {{
+  ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!("{}", $v);
+    println!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
-    $crate::preload::debug!("{}", $v);
+    $crate::preload::debug!($($arg)+);
   }};
 }
 /// 打印日志trace（宏版本）
 #[macro_export]
 macro_rules! tp {
-  ($v:expr) => {{
+  ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!("{}", $v);
+    println!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
-    $crate::preload::trace!("{}", $v);
+    $crate::preload::trace!($($arg)+);
   }};
 }
