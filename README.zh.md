@@ -49,10 +49,10 @@
 # 📖 示例
 ```toml
 [dependencies]
-# default tracing
-e-log = { version = "0.3" }
+# default log
+e-log = { version = "0.4" }
 # log
-e-log = {version = "0.3", default-features = false, features = ["log","panic","dialog"]}
+e-log = {version = "0.4", default-features = false, features = ["log","panic","dialog"]}
 ```
 
 
@@ -78,7 +78,7 @@ e-log = {version = "0.3", default-features = false, features = ["log","panic","d
 
 ## 📜 开源协议
 
-本项目采用 [MIT](LICENSE-MIT) 和 [Apache 2.0](LICENSE-APACHE) 双重协议。
+本项目采用 MIT 和 Apache 2.0 双重协议，详见 [LICENSE](LICENSE) 与 [COPYRIGHT](COPYRIGHT)。
 
 ---
 

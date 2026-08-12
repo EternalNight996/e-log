@@ -7,7 +7,7 @@
   
 [![API](https://img.shields.io/badge/api-master-yellow.svg)](https://github.com/eternalnight996/e-log)[![API](https://docs.rs/e-log/badge.svg)](https://docs.rs/e-log)[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 
-English | [简体中文](readme.zh.md)
+English | [简体中文](README.zh.md)
 
 </div>
 
@@ -49,10 +49,10 @@ English | [简体中文](readme.zh.md)
 # 📖 Example
 ```toml
 [dependencies]
-# default tracing
-e-log = { version = "0.3" }
+# default log
+e-log = { version = "0.4" }
 # log
-e-log = {version = "0.3", default-features = false, features = ["log","panic","dialog"]}
+e-log = {version = "0.4", default-features = false, features = ["log","panic","dialog"]}
 ```
 
 
@@ -78,7 +78,7 @@ Before submitting a PR, please ensure:
 
 ## 📜 License
 
-This project is dual-licensed under [MIT](LICENSE-MIT) and [Apache 2.0](LICENSE-APACHE).
+This project is dual-licensed under MIT and Apache 2.0. See [LICENSE](LICENSE) and [COPYRIGHT](COPYRIGHT).
 
 ---
 
