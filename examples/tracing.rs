@@ -67,5 +67,11 @@ fn main() -> e_utils::AnyResult<()> {
   assert_eq!("BUG", "???");
   Ok(())
 }
-#[cfg(not(feature = "tracing"))]
+#[cfg(not(all(
+  feature = "tracing",
+  feature = "panic",
+  feature = "dialog",
+  feature = "tracing-appender",
+  feature = "tracing-subscriber"
+)))]
 fn main() {}

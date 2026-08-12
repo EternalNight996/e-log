@@ -66,7 +66,7 @@ strum = { version = "0.26", features = ["derive"] }
 # If you copy one of the examples into a new project, you should be using
 # [dependencies] instead, and delete the **path**.
 [dev-dependencies]
-e-log = { path = "./", features = [] }
+e-log = { path = "./", default-features = false, features = [] }
 tokio = { version = "1" }
 tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }
@@ -74,7 +74,7 @@ criterion = { version = "0.3.6", default-features = false }
 
 [package]
 name = "e-log"
-version = "0.4.2"
+version = "0.4.3"
 description = "a rust log"
 authors = ["Eternal(梦游) <EternalNightYeah2@yeah.net>"]
 edition = "2021"

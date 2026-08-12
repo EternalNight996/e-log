@@ -39,7 +39,7 @@ macro_rules! cfg_panic {
 macro_rules! cfg_must {
   ($($item:item)*) => {
       $(
-          #[cfg(all(feature="log", not(feature="tracing")))]
+          #[cfg(feature = "log")]
           $item
           #[cfg(all(feature="tracing", not(feature="log")))]
           $item
@@ -48,7 +48,7 @@ macro_rules! cfg_must {
 }
 
 ///
-#[cfg(all(feature="log", not(feature="tracing")))]
+#[cfg(feature = "log")]
 #[macro_export]
 macro_rules! info2 {
   (target: $target:expr, $msg:expr) => ({
@@ -57,9 +57,9 @@ macro_rules! info2 {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:$target, $crate::core::_log::__private::StdLevel::Info, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Info, $($arg)+))
 }
-#[cfg(all(feature="log", not(feature="tracing")))]
+#[cfg(feature = "log")]
 #[macro_export]
-/// 此宏用于记录警告级别的日志。当 `log` 特性启用且 `tracing` 特性未启用时，使用 `slog` 进行日志记录；当 `tracing` 特性启用且 `log` 特性未启用时，使用 `tracing` 进行日志记录。
+/// 姝ゅ畯鐢ㄤ簬璁板綍璀﹀憡绾у埆鐨勬棩蹇椼€傚綋 `log` 鐗规€у惎鐢ㄤ笖 `tracing` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `slog` 杩涜鏃ュ織璁板綍锛涘綋 `tracing` 鐗规€у惎鐢ㄤ笖 `log` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `tracing` 杩涜鏃ュ織璁板綍銆?
 macro_rules! warn2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
@@ -67,9 +67,9 @@ macro_rules! warn2 {
   (target: $target:expr, $($arg:tt)+) => ($crate::core::_log::__private::slog!(target:$target, $crate::core::_log::__private::StdLevel::Warn, $($arg)+));
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Warn, $($arg)+))
 }
-#[cfg(all(feature="log", not(feature="tracing")))]
+#[cfg(feature = "log")]
 #[macro_export]
-/// 此宏用于记录错误级别的日志。当 `log` 特性启用且 `tracing` 特性未启用时，使用 `slog` 进行日志记录；当 `tracing` 特性启用且 `log` 特性未启用时，使用 `tracing` 进行日志记录。
+/// 姝ゅ畯鐢ㄤ簬璁板綍閿欒绾у埆鐨勬棩蹇椼€傚綋 `log` 鐗规€у惎鐢ㄤ笖 `tracing` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `slog` 杩涜鏃ュ織璁板綍锛涘綋 `tracing` 鐗规€у惎鐢ㄤ笖 `log` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `tracing` 杩涜鏃ュ織璁板綍銆?
 macro_rules! error2 {
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
@@ -78,7 +78,7 @@ macro_rules! error2 {
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Error, $($arg)+))
 }
 ///
-#[cfg(all(feature="log", not(feature="tracing")))]
+#[cfg(feature = "log")]
 #[macro_export]
 macro_rules! debug2 {
   (target: $target:expr, $msg:expr) => ({
@@ -88,7 +88,7 @@ macro_rules! debug2 {
   ($($arg:tt)+) => ($crate::core::_log::__private::slog!($crate::core::_log::__private::StdLevel::Debug, $($arg)+))
 }
 ///
-#[cfg(all(feature="log", not(feature="tracing")))]
+#[cfg(feature = "log")]
 #[macro_export]
 macro_rules! trace2 {
   (target: $target:expr, $msg:expr) => ({
@@ -151,7 +151,7 @@ macro_rules! trace2 {
 
 
 #[macro_export]
-/// 打印日志info（宏版本）
+/// 鎵撳嵃鏃ュ織info锛堝畯鐗堟湰锛?
 macro_rules! p {
   ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
@@ -161,18 +161,18 @@ macro_rules! p {
   }};
 }
 
-/// 打印日志error（宏版本）
+/// 鎵撳嵃鏃ュ織error锛堝畯鐗堟湰锛?
 #[macro_export]
 macro_rules! ep {
   ($($arg:tt)+) => {{
     #[cfg(debug_assertions)]
-    println!($($arg)+);
+    eprintln!($($arg)+);
     #[cfg(any(feature = "log", feature = "tracing"))]
     $crate::preload::error!($($arg)+);
   }};
 }
 
-/// 打印日志warn（宏版本）
+/// 鎵撳嵃鏃ュ織warn锛堝畯鐗堟湰锛?
 #[macro_export]
 macro_rules! wp {
   ($($arg:tt)+) => {{
@@ -183,7 +183,7 @@ macro_rules! wp {
   }};
 }
 
-/// 打印日志debug（宏版本）
+/// 鎵撳嵃鏃ュ織debug锛堝畯鐗堟湰锛?
 #[macro_export]
 macro_rules! dp {
   ($($arg:tt)+) => {{
@@ -193,7 +193,7 @@ macro_rules! dp {
     $crate::preload::debug!($($arg)+);
   }};
 }
-/// 打印日志trace（宏版本）
+/// 鎵撳嵃鏃ュ織trace锛堝畯鐗堟湰锛?
 #[macro_export]
 macro_rules! tp {
   ($($arg:tt)+) => {{

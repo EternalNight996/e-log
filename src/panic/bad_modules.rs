@@ -1,5 +1,4 @@
 //! Keep track of modules that might have caused the program to panic
-use crate::preload::*;
 use e_utils::once_cell::sync::Lazy;
 use parking_lot::RwLock;
 use std::path::{Path, PathBuf};

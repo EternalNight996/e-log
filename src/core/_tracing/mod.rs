@@ -82,6 +82,8 @@ pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync, is_trace: bool
       #[cfg(feature = "tracing-log")]
       tracing_log::LogTracer::init().unwrap();
     }
-    set_global_default(subscriber).unwrap();
+    if let Err(e) = set_global_default(subscriber) {
+      eprintln!("e-log: failed to set global tracing subscriber: {e}");
+    }
   });
 }

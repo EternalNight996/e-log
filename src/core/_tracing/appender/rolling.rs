@@ -596,6 +596,9 @@ impl Inner {
   }
 
   fn prune_old_logs(&self, max_files: usize) {
+    if max_files == 0 {
+      return;
+    }
     let files = fs::read_dir(&self.log_directory).map(|dir| {
       dir
         .filter_map(|entry| {
@@ -775,6 +778,7 @@ mod test {
     let expected_value = "Hello";
     write_to_log(&mut appender, expected_value);
     assert!(find_str_in_log(directory.path(), expected_value));
+    drop(appender);
 
     directory
       .close()
@@ -1153,5 +1157,27 @@ mod test {
         x => panic!("unexpected date {}", x),
       }
     }
+  }
+
+  #[test]
+  fn test_max_log_files_zero_does_not_panic() {
+    let directory = tempfile::tempdir().expect("failed to create tempdir");
+    let now = OffsetDateTime::now_utc();
+    let (inner, _) = Inner::new(
+      now,
+      Rotation::HOURLY,
+      directory.path(),
+      Some("t".to_string()),
+      None,
+      Some(0),
+      FileShare::Read,
+    )
+    .unwrap();
+    for i in 0..3 {
+      fs::write(directory.path().join(format!("t.{i}")), b"x").unwrap();
+    }
+    // must not underflow or delete files when max_files == 0
+    inner.prune_old_logs(0);
+    assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 4);
   }
 }

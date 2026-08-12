@@ -3,7 +3,6 @@
 // compile_error!(
 //   "Compiling MyApp with `panic=\"abort\"` will make crash handling impossible, or mostly useless."
 // );
-use crate::preload::*;
 use e_utils::fs::AutoPath as _;
 use e_utils::once_cell::sync::Lazy;
 use e_utils::AnyResult;
@@ -16,9 +15,6 @@ use std::hash::Hash;
 use std::io::Write as _;
 use std::panic::{Location, PanicInfo};
 use std::path::PathBuf;
-use std::sync::OnceLock;
-use tokio::sync::mpsc::Sender;
-static PANIC_SIGNAL: OnceLock<Sender<SavedPanic>> = OnceLock::new();
 
 // Prevent panic handler from creating duplicate error logs
 static PANICS: Lazy<Mutex<HashSet<Panic>>> = Lazy::new(|| Mutex::new(HashSet::new()));
@@ -240,14 +236,6 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(folder: P, fname: &str) -> AnyR
       None => message,
     };
 
-    // Send a copy of the panic + location of where it's saved
-    if let Some(sender) = PANIC_SIGNAL.get() {
-      let _ = sender.blocking_send(SavedPanic {
-        panic: panic_log.clone(),
-        saved_to,
-      });
-    }
-
     let message = move || e_utils::dialog::sync::error("❌BUG跟踪Panic", &message);
     let msg_box = std::thread::spawn(message);
 
@@ -255,7 +243,7 @@ pub fn set_panic_hook<P: AsRef<std::path::Path>>(folder: P, fname: &str) -> AnyR
     // This allows other threads to unwind without
     // having the user to close the dialog box.
     if let Some("main") = std::thread::current().name() {
-      msg_box.join().unwrap();
+      let _ = msg_box.join();
     }
   }));
   Ok(())

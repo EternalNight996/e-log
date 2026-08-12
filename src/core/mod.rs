@@ -3,14 +3,14 @@ cfg_tracing! {
   pub mod _tracing;
   #[allow(unused_imports)]
   pub use _tracing::*;
+  #[cfg(not(feature = "log"))]
   pub use tracing::level_filters::LevelFilter;
+  #[cfg(not(feature = "log"))]
   pub use tracing::{error,debug,warn,info,trace};
 }
 cfg_log! {
   /// Std
   pub mod _log;
-  #[allow(unused_imports)]
-  pub use _log::*;
   pub use log::LevelFilter;
   pub use log::{error,debug,warn,info,trace};
 }
@@ -74,7 +74,7 @@ impl From<LevelFilter> for Level {
     }
   }
 }
-#[cfg(feature = "tracing")]
+#[cfg(all(feature = "tracing", not(feature = "log")))]
 impl From<LevelFilter> for Level {
   fn from(value: LevelFilter) -> Self {
     match value {
@@ -101,7 +101,7 @@ impl Level {
     }
   }
   /// 日志兼容trace
-  #[cfg(feature = "tracing")]
+  #[cfg(all(feature = "tracing", not(feature = "log")))]
   pub fn to_level_filter(&self) -> LevelFilter {
     match self {
       Level::Off => LevelFilter::OFF,
