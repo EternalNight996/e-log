@@ -51,6 +51,8 @@ macro_rules! cfg_must {
 #[cfg(feature = "log")]
 #[macro_export]
 macro_rules! info2 {
+  // `[_tag]`: 让 `tag = …` 在 log 路径下也可用（ADR-001 留的宏选择层）
+  (tag = $tag:expr, $msg:expr) => ($crate::core::_log::__private::slog!(target:&$tag, $crate::core::_log::__private::StdLevel::Info, "{}", $msg));
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Info, "{}",$msg)
   });
@@ -61,6 +63,8 @@ macro_rules! info2 {
 #[macro_export]
 /// 姝ゅ畯鐢ㄤ簬璁板綍璀﹀憡绾у埆鐨勬棩蹇椼€傚綋 `log` 鐗规€у惎鐢ㄤ笖 `tracing` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `slog` 杩涜鏃ュ織璁板綍锛涘綋 `tracing` 鐗规€у惎鐢ㄤ笖 `log` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `tracing` 杩涜鏃ュ織璁板綍銆?
 macro_rules! warn2 {
+  // `[_tag]`: 让 `tag = …` 在 log 路径下也可用（ADR-001 留的宏选择层）
+  (tag = $tag:expr, $msg:expr) => ($crate::core::_log::__private::slog!(target:&$tag, $crate::core::_log::__private::StdLevel::Warn, "{}", $msg));
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Warn, "{}",$msg)
   });
@@ -71,6 +75,8 @@ macro_rules! warn2 {
 #[macro_export]
 /// 姝ゅ畯鐢ㄤ簬璁板綍閿欒绾у埆鐨勬棩蹇椼€傚綋 `log` 鐗规€у惎鐢ㄤ笖 `tracing` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `slog` 杩涜鏃ュ織璁板綍锛涘綋 `tracing` 鐗规€у惎鐢ㄤ笖 `log` 鐗规€ф湭鍚敤鏃讹紝浣跨敤 `tracing` 杩涜鏃ュ織璁板綍銆?
 macro_rules! error2 {
+  // `[_tag]`: 让 `tag = …` 在 log 路径下也可用（ADR-001 留的宏选择层）
+  (tag = $tag:expr, $msg:expr) => ($crate::core::_log::__private::slog!(target:&$tag, $crate::core::_log::__private::StdLevel::Error, "{}", $msg));
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Error, "{}",$msg)
   });
@@ -81,6 +87,8 @@ macro_rules! error2 {
 #[cfg(feature = "log")]
 #[macro_export]
 macro_rules! debug2 {
+  // `[_tag]`: 让 `tag = …` 在 log 路径下也可用（ADR-001 留的宏选择层）
+  (tag = $tag:expr, $msg:expr) => ($crate::core::_log::__private::slog!(target:&$tag, $crate::core::_log::__private::StdLevel::Debug, "{}", $msg));
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Debug, "{}",$msg)
   });
@@ -91,6 +99,8 @@ macro_rules! debug2 {
 #[cfg(feature = "log")]
 #[macro_export]
 macro_rules! trace2 {
+  // `[_tag]`: 让 `tag = …` 在 log 路径下也可用（ADR-001 留的宏选择层）
+  (tag = $tag:expr, $msg:expr) => ($crate::core::_log::__private::slog!(target:&$tag, $crate::core::_log::__private::StdLevel::Trace, "{}", $msg));
   (target: $target:expr, $msg:expr) => ({
     $crate::core::_log::__private::slog!(target:$target,$crate::core::_log::__private::StdLevel::Trace, "{}",$msg)
   });

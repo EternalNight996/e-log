@@ -12,6 +12,8 @@ cfg_log! {
   /// Std
   pub mod _log;
   pub use log::LevelFilter;
+  // 短名保持 ADR-001 的「log 优先」再导出不变；
+  // `tag = …` 支持落在 `*2` 宏上（见 src/macros.rs 的 `[_tag]` 分支）。
   pub use log::{error,debug,warn,info,trace};
 }
 pub use e_utils::fs::options::FileShare;

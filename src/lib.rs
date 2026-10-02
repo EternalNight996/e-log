@@ -33,6 +33,9 @@ cfg_must! {
   /// preload
   #[path = "./preload.rs"]
   pub mod preload;
+  /// 带 tag 的函数式日志入口（宏写法在 log 路径支持不了 `tag = …` 时的替代）
+  #[path = "./tag.rs"]
+  pub mod tag;
   /// panic
   pub mod panic;
   /// dialog
