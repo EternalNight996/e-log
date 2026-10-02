@@ -30,7 +30,9 @@ log = ["dep:log"]
 # 让 log 路径下的 preload 日志宏也接受 `tag=…` 写法（与 tracing 路径同名同义）。
 # 必须同时启用 tracing:tag 结构体字段这个概念只存在于 tracing。
 # 只给确实要传 tag 的业务 crate 开（如各 *-core 的 logger.rs）。
-_tag = ["log", "tracing"]
+_tag = ["log", "tracing", "_tag_any"]
+# 供 example 声明 required-features 用（两者任一即可，Cargo 不支持 OR 表达）
+_tag_any = ["log", "tracing"]
 default = [
   # "tracing-appender",
   # "tracing-subscriber",
@@ -74,6 +76,12 @@ e-log = { path = "./", default-features = false, features = [] }
 tokio = { version = "1" }
 tempfile = "3"
 criterion = { version = "0.3.6", default-features = false }
+
+# tag_fn 需要 log 或 tracing 之一（`_tag_any` 即该 OR 的替代表达）；
+# 未开时 Cargo 自动跳过，`--examples` 在“无特性”组合下也能过。
+[[example]]
+name = "tag_fn"
+required-features = ["_tag_any"]
 
 
 [package]
